@@ -3,7 +3,11 @@ package com.enonic.xp.repo.impl.storage;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import com.google.common.collect.ImmutableList;
+
 import com.enonic.xp.context.ContextAccessor;
+import com.enonic.xp.data.Property;
+import com.enonic.xp.data.ValueTypes;
 import com.enonic.xp.node.Node;
 import com.enonic.xp.node.NodeId;
 import com.enonic.xp.node.NodeIds;
@@ -16,6 +20,7 @@ import com.enonic.xp.node.NodeVersionIds;
 import com.enonic.xp.node.NodeVersionMetadata;
 import com.enonic.xp.node.NodeVersions;
 import com.enonic.xp.node.Nodes;
+import com.enonic.xp.relationship.Relationships;
 import com.enonic.xp.repo.impl.InternalContext;
 import com.enonic.xp.repo.impl.branch.BranchService;
 import com.enonic.xp.repo.impl.branch.storage.MoveBranchParams;
@@ -24,6 +29,7 @@ import com.enonic.xp.repo.impl.branch.storage.NodeFactory;
 import com.enonic.xp.repo.impl.branch.storage.NodesBranchMetadata;
 import com.enonic.xp.repo.impl.index.IndexServiceInternal;
 import com.enonic.xp.repo.impl.node.dao.NodeVersionDao;
+import com.enonic.xp.repo.impl.relationship.RelationshipService;
 import com.enonic.xp.repo.impl.version.NodeVersionDocumentId;
 import com.enonic.xp.repo.impl.version.VersionService;
 import com.enonic.xp.security.RoleKeys;
@@ -39,6 +45,8 @@ public class StorageServiceImpl
 
     private BranchService branchService;
 
+    private RelationshipService relationshipService;
+
     private NodeVersionDao nodeVersionDao;
 
     private IndexServiceInternal indexServiceInternal;
@@ -52,10 +60,29 @@ public class StorageServiceImpl
 
         storeBranchAndIndex( node, context, nodeVersionId );
 
-        return Node.create( node ).
+        final Node storedNode = Node.create( node ).
             nodeVersionId( nodeVersionId ).
             build();
 
+        storeRelationships( storedNode, context );
+
+        return storedNode;
+
+    }
+
+    private void storeRelationships( final Node node, final InternalContext context )
+    {
+        final ImmutableList<Property> references = node.data().getProperties( ValueTypes.REFERENCE );
+
+        if ( !references.isEmpty() )
+        {
+            for ( final Property reference : references )
+            {
+                final com.enonic.xp.util.Reference refValue = reference.getValue().asReference();
+
+                this.relationshipService.store( node.id(), refValue, context );
+            }
+        }
     }
 
     private void storeVersionMetadata( final Node node, final InternalContext context, final NodeVersionId nodeVersionId )
@@ -222,6 +249,18 @@ public class StorageServiceImpl
         this.branchService.cachePath( params.getNodeId(), params.getNewPath(), context );
     }
 
+    @Override
+    public Relationships getRelationships( final NodeId source, final InternalContext context )
+    {
+        return this.relationshipService.getTargets( source, context );
+    }
+
+    @Override
+    public Relationships getReferences( final NodeId target, final InternalContext context )
+    {
+        return this.relationshipService.getSources( target, context );
+    }
+
     private Node doGetNode( final NodeBranchMetadata nodeBranchMetadata )
     {
         if ( nodeBranchMetadata == null )
@@ -321,5 +360,11 @@ public class StorageServiceImpl
     public void setIndexServiceInternal( final IndexServiceInternal indexServiceInternal )
     {
         this.indexServiceInternal = indexServiceInternal;
+    }
+
+    @Reference
+    public void setRelationshipService( final RelationshipService relationshipService )
+    {
+        this.relationshipService = relationshipService;
     }
 }

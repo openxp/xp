@@ -57,6 +57,7 @@ import com.enonic.xp.node.SnapshotResult;
 import com.enonic.xp.node.SnapshotResults;
 import com.enonic.xp.node.SyncWorkResolverParams;
 import com.enonic.xp.node.UpdateNodeParams;
+import com.enonic.xp.relationship.Relationships;
 import com.enonic.xp.repo.impl.NodeEvents;
 import com.enonic.xp.repo.impl.blob.BlobStore;
 import com.enonic.xp.repo.impl.blob.file.FileBlobStore;
@@ -651,6 +652,19 @@ public class NodeServiceImpl
             build().
             resolve( node );
     }
+
+    @Override
+    public Relationships getRelationships( final NodeId source )
+    {
+        return GetRelationshipsCommand.create().
+            indexServiceInternal( this.indexServiceInternal ).
+            storageService( this.storageService ).
+            searchService( this.searchService ).
+            nodeId( source ).
+            build().
+            execute();
+    }
+
 
     @Reference
     public void setIndexServiceInternal( final IndexServiceInternal indexServiceInternal )

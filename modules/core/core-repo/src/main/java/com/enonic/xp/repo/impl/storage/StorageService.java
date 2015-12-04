@@ -10,6 +10,7 @@ import com.enonic.xp.node.NodeVersion;
 import com.enonic.xp.node.NodeVersionId;
 import com.enonic.xp.node.NodeVersionMetadata;
 import com.enonic.xp.node.Nodes;
+import com.enonic.xp.relationship.Relationships;
 import com.enonic.xp.repo.impl.InternalContext;
 import com.enonic.xp.repo.impl.branch.storage.NodeBranchMetadata;
 import com.enonic.xp.repo.impl.branch.storage.NodesBranchMetadata;
@@ -47,9 +48,14 @@ public interface StorageService
 
     NodePath getParentPath( final NodeId nodeId, final InternalContext context );
 
+    Relationships getRelationships( final NodeId nodeId, InternalContext context );
+
+    Relationships getReferences( final NodeId target, final InternalContext context );
+
     void handleNodeCreated( final NodeId nodeId, final NodePath nodePath, final InternalContext context );
 
     void handleNodeDeleted( final NodeId nodeId, final NodePath nodePath, final InternalContext context );
 
     void handleNodeMoved( final NodeMovedParams params, final InternalContext context );
+
 }

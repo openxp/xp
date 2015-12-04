@@ -24,7 +24,6 @@ public class VersionStorageDocFactory
             build();
 
         return StoreRequest.create().
-            nodePath( nodeVersion.getNodePath() ).
             id( createId( nodeVersion ) ).
             forceRefresh( false ).
             settings( StorageSettings.create().

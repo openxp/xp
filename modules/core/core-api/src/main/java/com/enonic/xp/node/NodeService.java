@@ -4,6 +4,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.io.ByteSource;
 
 import com.enonic.xp.branch.Branch;
+import com.enonic.xp.relationship.Relationships;
 import com.enonic.xp.util.BinaryReference;
 
 @Beta
@@ -82,6 +83,8 @@ public interface NodeService
     ImportNodeResult importNode( final ImportNodeParams params );
 
     NodesHasChildrenResult hasChildren( final Nodes nodes );
+
+    Relationships getRelationships( final NodeId source );
 
     boolean hasChildren( final Node node );
 

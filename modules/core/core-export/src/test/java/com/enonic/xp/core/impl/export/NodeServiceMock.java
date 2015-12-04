@@ -58,6 +58,7 @@ import com.enonic.xp.node.SnapshotResult;
 import com.enonic.xp.node.SnapshotResults;
 import com.enonic.xp.node.SyncWorkResolverParams;
 import com.enonic.xp.node.UpdateNodeParams;
+import com.enonic.xp.relationship.Relationships;
 import com.enonic.xp.util.BinaryReference;
 
 class NodeServiceMock
@@ -404,6 +405,12 @@ class NodeServiceMock
 
     @Override
     public boolean hasChildren( final Node node )
+    {
+        throw new UnsupportedOperationException( "Not implemented in mock" );
+    }
+
+    @Override
+    public Relationships getRelationships( final NodeId source )
     {
         throw new UnsupportedOperationException( "Not implemented in mock" );
     }

@@ -2,7 +2,6 @@ package com.enonic.xp.repo.impl.storage;
 
 import com.google.common.collect.Multimap;
 
-import com.enonic.xp.node.NodePath;
 import com.enonic.xp.repo.impl.StorageSettings;
 
 public class StoreRequest
@@ -17,8 +16,6 @@ public class StoreRequest
 
     private final String id;
 
-    private final NodePath path;
-
     private final String parent;
 
     private final String routing;
@@ -30,7 +27,6 @@ public class StoreRequest
         this.forceRefresh = builder.forceRefresh;
         this.timeout = builder.timeout;
         this.id = builder.id;
-        this.path = builder.path;
         this.routing = builder.routing;
         this.parent = builder.parent;
 
@@ -66,11 +62,6 @@ public class StoreRequest
         return id;
     }
 
-    private NodePath getPath()
-    {
-        return path;
-    }
-
     public String getParent()
     {
         return parent;
@@ -92,8 +83,6 @@ public class StoreRequest
         private int timeout = 5;
 
         private String id;
-
-        private NodePath path;
 
         private String parent;
 
@@ -130,12 +119,6 @@ public class StoreRequest
         public Builder id( String id )
         {
             this.id = id;
-            return this;
-        }
-
-        public Builder nodePath( final NodePath nodePath )
-        {
-            this.path = nodePath;
             return this;
         }
 

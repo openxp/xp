@@ -30,7 +30,6 @@ class BranchStorageRequestFactory
 
         return StoreRequest.create().
             id( new BranchDocumentId( nodeId, context.getBranch() ).toString() ).
-            nodePath( nodeBranchMetadata.getNodePath() ).
             forceRefresh( false ).
             settings( StorageSettings.create().
                 storageName( StoreStorageName.from( context.getRepositoryId() ) ).

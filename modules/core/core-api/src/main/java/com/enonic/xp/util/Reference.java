@@ -3,11 +3,17 @@ package com.enonic.xp.util;
 import com.google.common.annotations.Beta;
 
 import com.enonic.xp.node.NodeId;
+import com.enonic.xp.relationship.RelationshipName;
+import com.enonic.xp.relationship.RelationshipType;
 
 @Beta
 public class Reference
 {
     private final NodeId nodeId;
+
+    private final RelationshipName name = RelationshipName.from( "unknown" );
+
+    private final RelationshipType type = RelationshipType.MANAGED;
 
     public Reference( final NodeId nodeId )
     {
@@ -17,6 +23,16 @@ public class Reference
     public static Reference from( final String value )
     {
         return new Reference( NodeId.from( value ) );
+    }
+
+    public RelationshipName getName()
+    {
+        return name;
+    }
+
+    public RelationshipType getType()
+    {
+        return type;
     }
 
     public NodeId getNodeId()

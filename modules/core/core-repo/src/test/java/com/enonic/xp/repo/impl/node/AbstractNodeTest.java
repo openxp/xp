@@ -39,6 +39,9 @@ import com.enonic.xp.repo.impl.elasticsearch.search.ElasticsearchSearchDao;
 import com.enonic.xp.repo.impl.elasticsearch.snapshot.ElasticsearchSnapshotService;
 import com.enonic.xp.repo.impl.elasticsearch.storage.ElasticsearchStorageDao;
 import com.enonic.xp.repo.impl.node.dao.NodeVersionDaoImpl;
+import com.enonic.xp.repo.impl.relationship.RelationshipServiceImpl;
+import com.enonic.xp.repo.impl.relationship.RelationshipStorageName;
+import com.enonic.xp.repo.impl.relationship.RelationshipStorageType;
 import com.enonic.xp.repo.impl.repository.IndexNameResolver;
 import com.enonic.xp.repo.impl.repository.RepositoryInitializer;
 import com.enonic.xp.repo.impl.search.SearchServiceImpl;
@@ -97,6 +100,8 @@ public abstract class AbstractNodeTest
 
     protected BranchServiceImpl branchService;
 
+    protected RelationshipServiceImpl relationshipService;
+
     protected ElasticsearchIndexServiceInternal indexServiceInternal;
 
     protected ElasticsearchSnapshotService snapshotService;
@@ -142,6 +147,9 @@ public abstract class AbstractNodeTest
         this.versionService = new VersionServiceImpl();
         this.versionService.setStorageDao( storageDao );
 
+        this.relationshipService = new RelationshipServiceImpl();
+        this.relationshipService.setStorageDao( storageDao );
+
         // Storage-service
 
         this.nodeDao = new NodeVersionDaoImpl();
@@ -153,6 +161,7 @@ public abstract class AbstractNodeTest
         this.storageService.setBranchService( this.branchService );
         this.storageService.setIndexServiceInternal( this.indexServiceInternal );
         this.storageService.setNodeVersionDao( this.nodeDao );
+        this.storageService.setRelationshipService( this.relationshipService );
 
         // Search-service
 
@@ -297,6 +306,12 @@ public abstract class AbstractNodeTest
     protected void printBranchIndex()
     {
         printAllIndexContent( IndexNameResolver.resolveStorageIndexName( CTX_DEFAULT.getRepositoryId() ), IndexType.BRANCH.getName() );
+    }
+
+    protected void printRelationshipsIndex()
+    {
+        printAllIndexContent( RelationshipStorageName.from( CTX_DEFAULT.getRepositoryId() ).getName(),
+                              RelationshipStorageType.from( CTX_DEFAULT.getBranch() ).getName() );
     }
 
     protected void printVersionIndex()
