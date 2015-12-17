@@ -63,6 +63,8 @@ public final class NodeImporter
 
     private final XsltTransformer transformer;
 
+    private final boolean ignoreMissingNodeSource;
+
     private NodeImporter( final Builder builder )
     {
         this.nodeService = builder.nodeService;
@@ -72,6 +74,7 @@ public final class NodeImporter
         this.importNodeIds = builder.importNodeIds;
         this.importPermissions = builder.importPermissions;
         this.transformer = builder.xslt != null ? XsltTransformer.create( builder.xslt.getUrl(), builder.xsltParams ) : null;
+        this.ignoreMissingNodeSource = builder.ignoreMissingNodeSource;
     }
 
     public static Builder create()
@@ -153,6 +156,10 @@ public final class NodeImporter
         try
         {
             final Node node = processNodeSource( nodeFolder, processNodeSettings );
+            if ( node == null )
+            {
+                return;
+            }
 
             try
             {
@@ -180,6 +187,17 @@ public final class NodeImporter
     private Node processNodeSource( final VirtualFile nodeFolder, final ProcessNodeSettings.Builder processNodeSettings )
     {
         final VirtualFile nodeSource = this.exportReader.getNodeSource( nodeFolder );
+        if ( !nodeSource.exists() )
+        {
+            if ( this.ignoreMissingNodeSource )
+            {
+                return null;
+            }
+            else
+            {
+                throw new ImportNodeException( "Missing node source, expected at: " + nodeSource.getPath() );
+            }
+        }
 
         final CharSource nodeCharSource = preProcessSource( nodeSource.getPath(), nodeSource.getCharSource() );
         final Node.Builder newNodeBuilder = Node.create();
@@ -236,9 +254,7 @@ public final class NodeImporter
             importPermissions( this.importPermissions ).
             build();
 
-        final ImportNodeResult importNodeResult = this.nodeService.importNode( importNodeParams );
-
-        return importNodeResult;
+        return this.nodeService.importNode( importNodeParams );
     }
 
     private List<String> processBinarySource( final VirtualFile nodeFolder )
@@ -355,6 +371,8 @@ public final class NodeImporter
 
         private Map<String, Object> xsltParams;
 
+        private boolean ignoreMissingNodeSource = false;
+
         private Builder()
         {
         }
@@ -414,6 +432,12 @@ public final class NodeImporter
                 this.xsltParams = new HashMap<>();
             }
             this.xsltParams.put( paramName, paramValue );
+            return this;
+        }
+
+        public Builder ignoreMissingNodeSource()
+        {
+            this.ignoreMissingNodeSource = true;
             return this;
         }
 

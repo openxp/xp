@@ -12,9 +12,9 @@ import static com.enonic.xp.core.impl.export.ExportConstants.NODE_XML_EXPORT_NAM
 import static com.enonic.xp.core.impl.export.ExportConstants.ORDER_EXPORT_NAME;
 import static com.enonic.xp.core.impl.export.ExportConstants.SYSTEM_FOLDER_NAME;
 
-public class ExportReader
+public final class ExportReader
 {
-    private static String getLastBitFromUrl( final URL url )
+    private String getLastBitFromUrl( final URL url )
     {
         return url.toString().replaceFirst( ".*/([^/?]+).*", "$1" );
     }
@@ -57,15 +57,7 @@ public class ExportReader
     public VirtualFile getNodeSource( final VirtualFile nodeFolder )
     {
         final VirtualFilePath nodeSourcePath = nodeFolder.getPath().join( SYSTEM_FOLDER_NAME, NODE_XML_EXPORT_NAME );
-
-        final VirtualFile nodeVF = nodeFolder.resolve( nodeSourcePath );
-
-        if ( !nodeVF.exists() )
-        {
-            throw new ImportNodeException( "Missing node source, expected at: " + nodeVF.getPath() );
-        }
-
-        return nodeVF;
+        return nodeFolder.resolve( nodeSourcePath );
     }
 
 
