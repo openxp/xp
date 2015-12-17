@@ -10,6 +10,7 @@ import com.enonic.xp.toolbox.repo.DeleteSnapshotsCommand;
 import com.enonic.xp.toolbox.repo.DumpCommand;
 import com.enonic.xp.toolbox.repo.ExportCommand;
 import com.enonic.xp.toolbox.repo.ImportCommand;
+import com.enonic.xp.toolbox.repo.ImportContentCommand;
 import com.enonic.xp.toolbox.repo.ListSnapshotsCommand;
 import com.enonic.xp.toolbox.repo.LoadCommand;
 import com.enonic.xp.toolbox.repo.ReindexCommand;
@@ -30,6 +31,7 @@ public final class Main
         builder.withCommand( LoadCommand.class );
         builder.withCommand( ExportCommand.class );
         builder.withCommand( ImportCommand.class );
+        builder.withCommand( ImportContentCommand.class );
         builder.withCommand( ReindexCommand.class );
         builder.withCommand( SnapshotCommand.class );
         builder.withCommand( RestoreCommand.class );
