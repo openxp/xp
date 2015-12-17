@@ -15,15 +15,18 @@ import com.enonic.xp.admin.impl.rest.resource.ResourceConstants;
 import com.enonic.xp.context.Context;
 import com.enonic.xp.context.ContextAccessor;
 import com.enonic.xp.context.ContextBuilder;
+import com.enonic.xp.export.ContentImportParams;
+import com.enonic.xp.export.ContentImportResult;
+import com.enonic.xp.export.ContentImportService;
 import com.enonic.xp.export.ExportNodesParams;
 import com.enonic.xp.export.ExportService;
 import com.enonic.xp.export.ImportNodesParams;
 import com.enonic.xp.export.NodeExportResult;
 import com.enonic.xp.export.NodeImportResult;
 import com.enonic.xp.home.HomeDir;
+import com.enonic.xp.jaxrs.JaxRsComponent;
 import com.enonic.xp.security.RoleKeys;
 import com.enonic.xp.vfs.VirtualFiles;
-import com.enonic.xp.jaxrs.JaxRsComponent;
 
 @Path(ResourceConstants.REST_ROOT + "export")
 @Produces(MediaType.APPLICATION_JSON)
@@ -33,6 +36,8 @@ public class ExportResource
     implements JaxRsComponent
 {
     private ExportService exportService;
+
+    private ContentImportService contentImportService;
 
     private java.nio.file.Path getExportDirectory( final String exportName )
     {
@@ -72,6 +77,21 @@ public class ExportResource
         return NodeImportResultJson.from( result );
     }
 
+    @POST
+    @Path("importContent")
+    public ContentImportResultJson importContent( final ImportContentRequestJson request )
+        throws Exception
+    {
+        final ContentImportParams params = ContentImportParams.create().
+            source( VirtualFiles.from( getExportDirectory( request.getExportName() ) ) ).
+            targetPath( request.getTargetBranchPath().getContentPath() ).
+            targetBranch( request.getTargetBranchPath().getBranch() ).
+            build();
+
+        final ContentImportResult result = this.contentImportService.importContent( params );
+        return ContentImportResultJson.from( result );
+    }
+
     private Context getContext( final RepoPath repoPath )
     {
         return ContextBuilder.from( ContextAccessor.current() ).
@@ -85,6 +105,13 @@ public class ExportResource
     public void setExportService( final ExportService exportService )
     {
         this.exportService = exportService;
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    @Reference
+    public void setContentImportService( final ContentImportService contentImportService )
+    {
+        this.contentImportService = contentImportService;
     }
 }
 
