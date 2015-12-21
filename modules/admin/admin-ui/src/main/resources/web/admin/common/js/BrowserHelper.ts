@@ -1,7 +1,7 @@
 module api {
 
     enum BrowserName {
-        CHROME, FIREFOX, OPERA, SAFARI, MSIE, TRIDENT
+        CHROME, FIREFOX, OPERA, SAFARI, MSIE, TRIDENT, CRIOS, FXIOS
     }
 
     export class BrowserHelper {
@@ -52,7 +52,7 @@ module api {
         }
 
         private static init() {
-            var M = navigator.userAgent.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+            var M = navigator.userAgent.match(/(opera|chrome|safari|firefox|msie|trident|crios|fxios(?=\/))\/?\s*(\d+)/i) || [];
             BrowserHelper.BROWSER_NAME = (<any>BrowserName)[M[1].toLocaleUpperCase()];
             BrowserHelper.BROWSER_VERSION = M[2];
 
@@ -62,6 +62,14 @@ module api {
             BrowserHelper.IS_IE = BrowserHelper.BROWSER_NAME === BrowserName.TRIDENT ||
                                   BrowserHelper.BROWSER_NAME === BrowserName.MSIE ||
                                   navigator.userAgent.indexOf('Edge/') > 0;
+
+            if (navigator.vendor.indexOf("Google") > -1 || BrowserHelper.BROWSER_NAME === BrowserName.CRIOS) {
+                BrowserHelper.BROWSER_NAME = BrowserName.CHROME;
+            }
+            if (BrowserHelper.BROWSER_NAME === BrowserName.FXIOS) {
+                BrowserHelper.BROWSER_NAME = BrowserName.FIREFOX;
+                BrowserHelper.BROWSER_VERSION = BrowserHelper.AVAILABLE_VERSIONS[BrowserName.FIREFOX];
+            }
 
         }
     }
