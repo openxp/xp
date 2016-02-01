@@ -171,6 +171,7 @@ public abstract class ScriptTestSupport
         Mockito.when( bundle.getSymbolicName() ).thenReturn( APP_KEY.getName() );
         Mockito.when( bundle.getVersion() ).thenReturn( Version.valueOf( "1.0.0" ) );
         Mockito.when( bundle.getState() ).thenReturn( Bundle.ACTIVE );
+        Mockito.when( bundle.getLocation() ).thenReturn( "myapp" );
 
         final Hashtable<String, String> headers = new Hashtable<>();
         Mockito.when( bundle.getHeaders() ).thenReturn( headers );

@@ -102,6 +102,12 @@ public class MockApplication
     }
 
     @Override
+    public boolean isDevMode()
+    {
+        return true;
+    }
+
+    @Override
     public Set<String> getFiles()
     {
         return this.urlResolver.findFiles();

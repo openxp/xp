@@ -85,6 +85,11 @@ public class ApplicationJson
         return this.application.isStarted() ? "started" : "stopped";
     }
 
+    public boolean isDevMode()
+    {
+        return this.application.isDevMode();
+    }
+
     public FormJson getConfig()
     {
         return config;

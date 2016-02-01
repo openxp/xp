@@ -38,6 +38,8 @@ public interface Application
 
     boolean isStarted();
 
+    boolean isDevMode();
+
     Set<String> getFiles();
 
     URL resolveFile( String path );

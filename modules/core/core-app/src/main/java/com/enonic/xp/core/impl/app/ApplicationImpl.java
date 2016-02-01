@@ -23,6 +23,8 @@ final class ApplicationImpl
 {
     private final ApplicationKey key;
 
+    private final boolean devMode;
+
     private final VersionRange systemVersion;
 
     private final Bundle bundle;
@@ -31,9 +33,11 @@ final class ApplicationImpl
 
     private final ClassLoader classLoader;
 
+
     public ApplicationImpl( final Bundle bundle, final ApplicationUrlResolver urlResolver, final ClassLoader classLoader )
     {
         this.bundle = bundle;
+        this.devMode = bundle.getLocation().startsWith( "file:" );
         this.key = ApplicationKey.from( bundle );
         this.systemVersion = ApplicationHelper.parseVersionRange( getHeader( X_SYSTEM_VERSION, null ) );
         this.urlResolver = urlResolver;
@@ -116,6 +120,12 @@ final class ApplicationImpl
     public boolean isStarted()
     {
         return this.bundle.getState() == Bundle.ACTIVE;
+    }
+
+    @Override
+    public boolean isDevMode()
+    {
+        return devMode;
     }
 
     private String getHeader( final String name, final String defValue )
