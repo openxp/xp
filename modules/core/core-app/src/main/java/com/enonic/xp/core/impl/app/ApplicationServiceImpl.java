@@ -273,8 +273,9 @@ public final class ApplicationServiceImpl
 
         if ( existingApp != null )
         {
-            LOG.info( "Application [" + applicationName + "] exists in registry but not in repo, uninstalling existing" );
-            uninstallBundle( existingApp.getKey().getName() );
+            LOG.info( "Application [" + applicationName + "] exists in registry but not in repo." );
+            throw new ApplicationInstallException(
+                "Cannot install application : '" + applicationName + "'. Application already installed in development mode" );
         }
 
         final Bundle bundle = doInstallBundle( byteSource, applicationName );
