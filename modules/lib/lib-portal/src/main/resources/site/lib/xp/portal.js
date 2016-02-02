@@ -7,6 +7,14 @@
  * @module lib/xp/portal
  */
 
+function nullOrValue(value) {
+    if (value === undefined) {
+        return null;
+    }
+
+    return value;
+}
+
 /**
  * This function generates a URL pointing to a static file.
  *
@@ -240,4 +248,15 @@ exports.getMultipartStream = function (name) {
 exports.getMultipartText = function (name) {
     var bean = __.newBean('com.enonic.xp.lib.portal.multipart.MultipartHandler');
     return bean.getText(name);
+};
+
+
+exports.sendMessage = function (params) {
+    var bean = __.newBean('com.enonic.xp.lib.portal.websocket.SendMessageHandler');
+
+    bean.id = nullOrValue(params.id);
+    bean.name = nullOrValue(params.name);
+    bean.application = nullOrValue(params.application);
+    bean.message = nullOrValue(params.message);
+    bean.send();
 };

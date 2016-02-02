@@ -68,6 +68,7 @@
   <bundle level="30">${group}:portal-api:${version}</bundle>
   <bundle level="30">${group}:portal-owasp:${version}</bundle>
   <bundle level="30">${group}:portal-impl:${version}</bundle>
+  <bundle level="30">${group}:portal-websocket:${version}</bundle>
 
   <!-- Admin app -->
   <bundle level="30">${group}:admin-api:${version}</bundle>

@@ -1,0 +1,10 @@
+apply from: "$rootDir/gradle/osgi.gradle"
+
+dependencies {
+    compile project( ':web:web-api' )
+    compile project( ':portal:portal-api' )
+}
+
+bundle {
+    instruction 'Bundle-Name', 'Enonic XP Portal - WebSocket'
+}
