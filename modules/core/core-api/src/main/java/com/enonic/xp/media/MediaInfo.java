@@ -23,10 +23,6 @@ public final class MediaInfo
 
     public static final String IMAGE_INFO = "imageInfo";
 
-    public static final String EXTRACTED_TEXT_INFO = "extractedText";
-
-    public static final String EXTRACTED_TEXT_CONTENT = "content";
-
     public static final String IMAGE_INFO_PIXEL_SIZE = "pixelSize";
 
     public static final String IMAGE_INFO_IMAGE_HEIGHT = "imageHeight";
@@ -40,8 +36,6 @@ public final class MediaInfo
     public static final MixinName CAMERA_INFO_METADATA_NAME = MixinName.from( ApplicationKey.MEDIA_MOD, CAMERA_INFO );
 
     public static final MixinName GPS_INFO_METADATA_NAME = MixinName.from( ApplicationKey.BASE, GPS_INFO );
-
-    public static final MixinName EXTRACTED_TEXT_MIXIN_NAME = MixinName.from( ApplicationKey.MEDIA_MOD, EXTRACTED_TEXT_INFO );
 
     private MediaInfo( final Builder builder )
     {

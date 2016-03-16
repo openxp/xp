@@ -4,18 +4,11 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.enonic.xp.content.CreateContentParams;
-import com.enonic.xp.content.ExtraData;
 import com.enonic.xp.content.ExtraDatas;
 import com.enonic.xp.data.PropertyTree;
-import com.enonic.xp.form.FormItem;
-import com.enonic.xp.form.FormItems;
-import com.enonic.xp.media.ExtractedTextInfo;
 import com.enonic.xp.media.MediaInfo;
 import com.enonic.xp.schema.content.ContentType;
-import com.enonic.xp.schema.content.ContentTypeName;
 import com.enonic.xp.schema.content.ContentTypeService;
-import com.enonic.xp.schema.content.GetContentTypeParams;
-import com.enonic.xp.schema.mixin.Mixin;
 import com.enonic.xp.schema.mixin.MixinService;
 import com.enonic.xp.schema.mixin.Mixins;
 
@@ -24,9 +17,10 @@ import com.enonic.xp.schema.mixin.Mixins;
 public class TextExtractorContentProcessor
     implements ContentProcessor
 {
-    private MixinService mixinService;
 
-    private ContentTypeService contentTypeService;
+    protected ContentTypeService contentTypeService;
+
+    protected MixinService mixinService;
 
     @Override
     public boolean supports( final ContentType contentType )
@@ -36,83 +30,41 @@ public class TextExtractorContentProcessor
 
     public ProcessCreateResult processCreate( final ProcessCreateParams params )
     {
-        final CreateContentParams originalCreateContentParams = params.getCreateContentParams();
-        final ContentTypeName contentTypeName = originalCreateContentParams.getType();
+        final CreateContentParams createContentParams = params.getCreateContentParams();
 
-        final Mixins contentTypeMixins = getMixins( contentTypeName );
+        final PropertyTree data = createContentParams.getData();
 
-        ExtraDatas extraDatas = null;
+        final MediaInfo mediaInfo = params.getMediaInfo();
 
-        if ( params.getMediaInfo() != null )
+        if ( mediaInfo != null && mediaInfo.getExtractedTextInfo() != null )
         {
-            extraDatas = extractMetadata( params.getMediaInfo(), contentTypeMixins );
+            data.setString( "extractedText", ExtractedTextCleaner.clean( mediaInfo.getExtractedTextInfo().getExtractedText() ) );
         }
 
-        final CreateContentParams newCreateContentParams = CreateContentParams.create( originalCreateContentParams ).
-            extraDatas( extraDatas ).
-            build();
-
-        return new ProcessCreateResult( newCreateContentParams );
+        return new ProcessCreateResult( createContentParams );
     }
 
-    private Mixins getMixins( final ContentTypeName contentTypeName )
-    {
-        final ContentType contentType = contentTypeService.getByName( GetContentTypeParams.from( contentTypeName ) );
-
-        return mixinService.getByContentType( contentType );
-    }
 
     @Override
     public ProcessUpdateResult processUpdate( final ProcessUpdateParams params )
     {
-        //final Mixins contentTypeMixins = getMixins( params.getUpdateContentParams(). );
         return null;
     }
 
     private ExtraDatas extractMetadata( final MediaInfo mediaInfo, final Mixins mixins )
     {
-        final ExtraDatas.Builder extraDatasBuilder = ExtraDatas.create();
-
-        for ( Mixin mixin : mixins )
-        {
-            populateTextExtractionFormItemsInMixin( extraDatasBuilder, mixin, mediaInfo.getExtractedTextInfo() );
-        }
-
-        return extraDatasBuilder.build();
-    }
-
-    private void populateTextExtractionFormItemsInMixin( final ExtraDatas.Builder extradatasBuilder, final Mixin mixin,
-                                                         final ExtractedTextInfo extractedTextInfo )
-    {
-        final FormItems formItems = mixin.getForm().getFormItems();
-
-        if ( formItems.size() == 0 )
-        {
-            return;
-        }
-
-        final ExtraData extraData = new ExtraData( mixin.getName(), new PropertyTree() );
-
-        final FormItem extractedTextItem = formItems.getItemByName( MediaInfo.EXTRACTED_TEXT_CONTENT );
-
-        if ( extractedTextItem != null )
-        {
-            final String extractedText = ExtractedTextCleaner.clean( extractedTextInfo.getExtractedText() );
-            extraData.getData().addString( MediaInfo.EXTRACTED_TEXT_CONTENT, extractedText );
-        }
-
-        extradatasBuilder.add( extraData );
-    }
-
-    @Reference
-    public void setMixinService( final MixinService mixinService )
-    {
-        this.mixinService = mixinService;
+        return null;
     }
 
     @Reference
     public void setContentTypeService( final ContentTypeService contentTypeService )
     {
         this.contentTypeService = contentTypeService;
+    }
+
+    @Reference
+    public void setMixinService( final MixinService mixinService )
+    {
+        this.mixinService = mixinService;
     }
 }

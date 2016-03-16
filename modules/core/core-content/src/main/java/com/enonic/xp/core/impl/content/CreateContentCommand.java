@@ -24,7 +24,6 @@ import com.enonic.xp.context.ContextAccessor;
 import com.enonic.xp.core.impl.content.processor.ContentProcessor;
 import com.enonic.xp.core.impl.content.processor.ProcessCreateParams;
 import com.enonic.xp.core.impl.content.processor.ProcessCreateResult;
-import com.enonic.xp.core.impl.content.processor.ProxyContentProcessor;
 import com.enonic.xp.core.impl.content.validate.DataValidationError;
 import com.enonic.xp.core.impl.content.validate.DataValidationErrors;
 import com.enonic.xp.core.impl.content.validate.InputValidator;
@@ -244,7 +243,7 @@ final class CreateContentCommand
 
     private CreateContentParams runContentProcessors( final CreateContentParams createContentParams, final ContentType contentType )
     {
-        CreateContentParams updatedParams = createContentParams;
+        CreateContentParams processedParams = createContentParams;
 
         for ( final ContentProcessor contentProcessor : this.contentProcessors )
         {
@@ -253,17 +252,12 @@ final class CreateContentCommand
                 final ProcessCreateResult processCreateResult =
                     contentProcessor.processCreate( new ProcessCreateParams( createContentParams, mediaInfo ) );
 
-                updatedParams = CreateContentParams.create( processCreateResult.getCreateContentParams() ).
+                processedParams = CreateContentParams.create( processCreateResult.getCreateContentParams() ).
                     build();
             }
         }
 
-        return ProxyContentProcessor.create().
-            mediaInfo( mediaInfo ).
-            contentType( contentType ).
-            mixinService( mixinService ).
-            build().
-            processCreate( updatedParams );
+        return processedParams;
     }
 
     private void populateLanguage( final CreateContentTranslatorParams.Builder builder )

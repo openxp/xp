@@ -44,8 +44,7 @@ class BuiltinMixinsTypes
         build();
 
 
-    private static final Mixins MIXINS =
-        Mixins.from( IMAGE_METADATA, CAMERA_METADATA, GPS_METADATA, ExtractedTextMixin.EXTRACTED_TEXT_INFO_MIXIN );
+    private static final Mixins MIXINS = Mixins.from( IMAGE_METADATA, CAMERA_METADATA, GPS_METADATA );
 
     private static Form createImageInfoMixinForm()
     {
