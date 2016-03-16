@@ -146,7 +146,7 @@ public class CreateContentCommandTest
             name( "testInput" ).
             label( "testInput" ).
             inputType( InputTypeName.COMBO_BOX ).
-            defaultValue( "testValue" ).
+          //  defaultValue( "testValue" ).
             build();
 
         final ContentType contentType = ContentType.create().
