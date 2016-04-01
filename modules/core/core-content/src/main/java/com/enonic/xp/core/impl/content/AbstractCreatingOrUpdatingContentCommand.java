@@ -18,6 +18,9 @@ class AbstractCreatingOrUpdatingContentCommand
         ImmutableList.of( MediaType.OCTET_STREAM, MediaType.create( "application", "force-download" ),
                           MediaType.create( "application", "x-force-download" ) );
 
+    private final static ImmutableList<MediaType> EXECUTABLE_CONTENT_TYPES =
+        ImmutableList.of( MediaType.OCTET_STREAM, MediaType.create( "text", "plain" ), MediaType.create( "application", "x-bzip2" ) );
+
     final MixinService mixinService;
 
     final SiteService siteService;
@@ -93,6 +96,18 @@ class AbstractCreatingOrUpdatingContentCommand
     {
         final MediaType mediaType = MediaType.parse( contentType );
         return BINARY_CONTENT_TYPES.stream().anyMatch( mediaType::is );
+    }
+
+    protected boolean isExecutableContentType( final String contentType, final String fileName )
+    {
+        final MediaType mediaType = MediaType.parse( contentType );
+        return EXECUTABLE_CONTENT_TYPES.stream().anyMatch( mediaType::is ) && isExecutableFileName( fileName );
+    }
+
+    private boolean isExecutableFileName( final String fileName )
+    {
+        return fileName.endsWith( ".exe" ) || fileName.endsWith( ".msi" ) || fileName.endsWith( ".dmg" ) ||
+            fileName.endsWith( ".bat" ) || fileName.endsWith( ".sh" );
     }
 }
 
