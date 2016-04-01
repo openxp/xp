@@ -10,10 +10,10 @@ module app.wizard.action {
             super("Delete", "mod+del", true);
             this.onExecuted(() => {
                 new app.remove.ContentDeleteDialog()
-                    .setContentToDelete([new ContentSummaryAndCompareStatus().
-                                            setContentSummary(wizardPanel.getPersistedItem()).
-                                            setCompareStatus(wizardPanel.getContentCompareStatus())
-                                        ])
+                    .setContentToDelete(
+                        [new ContentSummaryAndCompareStatus().setContentSummary(wizardPanel.getPersistedItem()).setCompareStatus(
+                            wizardPanel.getContentCompareStatus())
+                        ])
                     .open();
             });
         }

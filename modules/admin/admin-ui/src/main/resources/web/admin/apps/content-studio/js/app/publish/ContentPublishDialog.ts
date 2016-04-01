@@ -219,7 +219,7 @@ module app.publish {
                     build();
                 this.selectionItems.push(item);
 
-                if(this.isInvalidContent(content)) {
+                if (this.isInvalidContent(content)) {
                     this.addOnClickedListener(item);
                     item.addClass("invalid");
                 }
@@ -332,7 +332,7 @@ module app.publish {
 
                 this.dependenciesItemsView.appendDependency(dependencyView);
 
-                if(this.isInvalidContent(dependency)) {
+                if (this.isInvalidContent(dependency)) {
                     this.addOnClickedListener(dependencyView);
                     dependencyView.addClass("invalid");
                 }
@@ -346,10 +346,11 @@ module app.publish {
         private addOnClickedListener(dependencyView: SelectionPublishItem<ContentPublishItem>) {
             dependencyView.onClicked(() => {
                 var contentId = new api.content.ContentId(dependencyView.getBrowseItem().getId());
-                api.content.ContentSummaryAndCompareStatusFetcher.fetch(contentId).then((contentSummary: ContentSummaryAndCompareStatus) => {
-                    this.close();
-                    new api.content.event.EditContentEvent([contentSummary]).fire();
-                });
+                api.content.ContentSummaryAndCompareStatusFetcher.fetch(contentId).then(
+                    (contentSummary: ContentSummaryAndCompareStatus) => {
+                        this.close();
+                        new api.content.event.EditContentEvent([contentSummary]).fire();
+                    });
             });
         }
 

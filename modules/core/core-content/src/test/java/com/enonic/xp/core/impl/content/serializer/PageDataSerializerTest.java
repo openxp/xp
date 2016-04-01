@@ -2,7 +2,6 @@ package com.enonic.xp.core.impl.content.serializer;
 
 import org.junit.Test;
 
-import com.enonic.xp.core.impl.content.serializer.PageDataSerializer;
 import com.enonic.xp.data.PropertyTree;
 import com.enonic.xp.page.Page;
 import com.enonic.xp.page.PageRegions;

@@ -214,17 +214,17 @@ public class ContentTypeResourceTest
 
     @Test
     public void testContentTypeIconSvg()
-            throws Exception
+        throws Exception
     {
         byte[] data = Resources.toByteArray( getClass().getResource( "archive.svg" ) );
         Icon schemaIcon = Icon.from( data, "image/svg+xml", Instant.now() );
 
         final ContentType contentType = ContentType.create().
-                name( "myapplication:icon_svg_test" ).
-                displayName( "My content type" ).
-                superType( ContentTypeName.from( "myapplication:unstructured" ) ).
-                icon( schemaIcon ).
-                build();
+            name( "myapplication:icon_svg_test" ).
+            displayName( "My content type" ).
+            superType( ContentTypeName.from( "myapplication:unstructured" ) ).
+            icon( schemaIcon ).
+            build();
         setupContentType( contentType );
 
         // exercise
@@ -232,7 +232,7 @@ public class ContentTypeResourceTest
 
         assertNotNull( response.getEntity() );
         assertEquals( schemaIcon.getMimeType(), response.getMediaType().toString() );
-        org.junit.Assert.assertArrayEquals( data, ( byte[] )response.getEntity() );
+        org.junit.Assert.assertArrayEquals( data, (byte[]) response.getEntity() );
     }
 
     @Test

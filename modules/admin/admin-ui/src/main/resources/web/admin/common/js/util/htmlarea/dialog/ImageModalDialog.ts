@@ -33,7 +33,7 @@ module api.util.htmlarea.dialog {
         static imagePrefix = "image://";
         static maxImageWidth = 640;
 
-        constructor(config:HtmlAreaImage, contentId:api.content.ContentId) {
+        constructor(config: HtmlAreaImage, contentId: api.content.ContentId) {
             this.imageElement = <HTMLImageElement>config.element;
             this.elementContainer = config.container;
             this.contentId = contentId;
@@ -174,7 +174,7 @@ module api.util.htmlarea.dialog {
         private previewImage() {
             this.imageToolbar = new ImageToolbar(this.image, this.imageLoadMask);
             this.imageToolbar.onCroppingChanged(() => {
-               this.imagePreviewScrollHandler.resetScrollPosition();
+                this.imagePreviewScrollHandler.resetScrollPosition();
             });
 
             this.image.onLoaded(() => {
@@ -510,22 +510,22 @@ module api.util.htmlarea.dialog {
             var alignment = this.image.getHTMLElement().style.textAlign;
 
             switch (alignment) {
-                case 'justify':
-                    this.justifyButton.addClass("active");
-                    break;
-                case 'left':
-                    this.alignLeftButton.addClass("active");
-                    break;
-                case 'center':
-                    this.centerButton.addClass("active");
-                    break;
-                case 'right':
-                    this.alignRightButton.addClass("active");
-                    break;
-                default:
-                    this.justifyButton.addClass("active");
-                    break;
-                }
+            case 'justify':
+                this.justifyButton.addClass("active");
+                break;
+            case 'left':
+                this.alignLeftButton.addClass("active");
+                break;
+            case 'center':
+                this.centerButton.addClass("active");
+                break;
+            case 'right':
+                this.alignRightButton.addClass("active");
+                break;
+            default:
+                this.justifyButton.addClass("active");
+                break;
+            }
         }
 
         private resetActiveButton() {

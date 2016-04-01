@@ -1,8 +1,6 @@
 package com.enonic.xp.core.impl.content.serializer;
 
 
-import com.enonic.xp.core.impl.content.page.region.DescriptorBasedComponentDataSerializer;
-import com.enonic.xp.core.impl.content.page.region.RegionDataSerializer;
 import com.enonic.xp.data.Property;
 import com.enonic.xp.data.PropertySet;
 import com.enonic.xp.page.DescriptorKey;

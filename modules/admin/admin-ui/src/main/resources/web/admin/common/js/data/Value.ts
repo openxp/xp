@@ -93,7 +93,7 @@ module api.data {
             return <api.util.LocalDate>this.value;
         }
 
-         getLocalDateTime(): api.util.LocalDateTime {
+        getLocalDateTime(): api.util.LocalDateTime {
             if (this.isNull()) {
                 return null;
             }

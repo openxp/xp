@@ -19,7 +19,6 @@ import com.enonic.xp.content.CreateContentTranslatorParams;
 import com.enonic.xp.content.ExtraData;
 import com.enonic.xp.content.ExtraDatas;
 import com.enonic.xp.content.UpdateContentTranslatorParams;
-import com.enonic.xp.core.impl.content.page.PageDataSerializer;
 import com.enonic.xp.data.PropertySet;
 import com.enonic.xp.data.PropertyTree;
 import com.enonic.xp.icon.Thumbnail;
@@ -48,56 +47,12 @@ public final class ContentDataSerializer
 {
     private static final PageDataSerializer PAGE_SERIALIZER = new PageDataSerializer( ContentPropertyNames.PAGE );
 
-    public PropertyTree toNodeData( final UpdateContentTranslatorParams params )
+    public PropertyTree toCreateNodeData( final CreateContentTranslatorParams params )
     {
-        final PropertyTree newPropertyTree = new PropertyTree();
-        final PropertySet contentAsData = newPropertyTree.getRoot();
+        final PropertyTree propertyTree = new PropertyTree();
 
-        final Content content = params.getEditedContent();
+        final PropertySet contentAsData = propertyTree.getRoot();
 
-        contentAsData.setBoolean( ContentPropertyNames.VALID, content.isValid() );
-        contentAsData.ifNotNull().addString( DISPLAY_NAME, content.getDisplayName() );
-        contentAsData.ifNotNull().addString( TYPE, content.getType().toString() );
-        contentAsData.ifNotNull().addString( OWNER, content.getOwner() != null ? content.getOwner().toString() : null );
-        contentAsData.ifNotNull().addString( LANGUAGE, content.getLanguage() != null ? content.getLanguage().toLanguageTag() : null );
-        contentAsData.ifNotNull().addInstant( MODIFIED_TIME, content.getModifiedTime() );
-        contentAsData.ifNotNull().addString( MODIFIER, params.getModifier().toString() );
-        contentAsData.ifNotNull().addString( CREATOR, content.getCreator().toString() );
-        contentAsData.ifNotNull().addInstant( CREATED_TIME, content.getCreatedTime() );
-        contentAsData.addSet( DATA, content.getData().getRoot().copy( contentAsData.getTree() ) );
-
-        if ( content.hasExtraData() )
-        {
-            final PropertySet metadataSet = contentAsData.addSet( ContentPropertyNames.EXTRA_DATA );
-
-            for ( final ExtraData extraData : content.getAllExtraData() )
-            {
-
-                final String xDataApplicationPrefix = extraData.getApplicationPrefix();
-                PropertySet xDataApplication = metadataSet.getSet( xDataApplicationPrefix );
-                if ( xDataApplication == null )
-
-                {
-                    xDataApplication = metadataSet.addSet( xDataApplicationPrefix );
-                }
-                xDataApplication.addSet( extraData.getName().getLocalName(),
-                                         extraData.getData().getRoot().copy( contentAsData.getTree() ) );
-            }
-        }
-
-        final Attachments attachments = mergeAttachments( content.getAttachments(), params );
-        applyAttachmentsAsData( attachments, contentAsData );
-
-        if ( content.hasPage() )
-        {
-            PAGE_SERIALIZER.toData( content.getPage(), contentAsData );
-        }
-
-        return newPropertyTree;
-    }
-
-    void toCreateNodeData( final CreateContentTranslatorParams params, final PropertySet contentAsData )
-    {
         contentAsData.addBoolean( VALID, params.isValid() );
         contentAsData.ifNotNull().addString( DISPLAY_NAME, params.getDisplayName() );
         contentAsData.ifNotNull().addString( TYPE, params.getType() != null ? params.getType().toString() : null );
@@ -111,26 +66,47 @@ public final class ContentDataSerializer
         contentAsData.ifNotNull().addString( LANGUAGE, params.getLanguage() != null ? params.getLanguage().toLanguageTag() : null );
         contentAsData.addSet( DATA, params.getData().getRoot().copy( contentAsData.getTree() ) );
 
-        if ( params.getExtraDatas() != null && !params.getExtraDatas().isEmpty() )
-        {
-            final PropertySet metaSet = contentAsData.addSet( EXTRA_DATA );
-            for ( final ExtraData extraData : params.getExtraDatas() )
-            {
+        final ExtraDatas extraData = params.getExtraDatas();
 
-                final String xDataApplicationPrefix = extraData.getApplicationPrefix();
-                PropertySet xDataApplication = metaSet.getSet( xDataApplicationPrefix );
-                if ( xDataApplication == null )
-                {
-                    xDataApplication = metaSet.addSet( xDataApplicationPrefix );
-                }
-                xDataApplication.addSet( extraData.getName().getLocalName(), extraData.getData().getRoot().copy( metaSet.getTree() ) );
-            }
+        if ( extraData != null && !extraData.isEmpty() )
+        {
+            addExtraData( contentAsData, extraData );
         }
 
         if ( params.getCreateAttachments() != null )
         {
             addAttachentInfoToDataset( params.getCreateAttachments(), contentAsData );
         }
+
+        return propertyTree;
+    }
+
+    public PropertyTree toUpdateNodeData( final UpdateContentTranslatorParams params )
+    {
+        final PropertyTree newPropertyTree = new PropertyTree();
+        final PropertySet contentAsData = newPropertyTree.getRoot();
+
+        final Content content = params.getEditedContent();
+
+        addMetadata( params, contentAsData, content );
+
+        contentAsData.addSet( DATA, content.getData().getRoot().copy( contentAsData.getTree() ) );
+
+        if ( content.hasExtraData() )
+        {
+            addExtraData( contentAsData, content.getAllExtraData() );
+        }
+
+        final Attachments attachments = mergeExistingAndUpdatedAttachments( content.getAttachments(), params );
+
+        applyAttachmentsAsData( attachments, contentAsData );
+
+        if ( content.hasPage() )
+        {
+            PAGE_SERIALIZER.toData( content.getPage(), contentAsData );
+        }
+
+        return newPropertyTree;
     }
 
     public Content.Builder fromData( final PropertySet contentAsSet )
@@ -142,17 +118,47 @@ public final class ContentDataSerializer
         builder.valid( contentAsSet.getBoolean( VALID ) != null ? contentAsSet.getBoolean( ContentPropertyNames.VALID ) : false );
         builder.data( contentAsSet.getSet( DATA ).toTree() );
 
-        addUserInfo( contentAsSet, builder );
-        addOwner( contentAsSet, builder );
-        addLanguage( contentAsSet, builder );
-        addExtraData( contentAsSet, builder );
-        addPage( contentAsSet, builder );
-        addAttachments( contentAsSet, builder );
+        extractUserInfo( contentAsSet, builder );
+        extractOwner( contentAsSet, builder );
+        extractLanguage( contentAsSet, builder );
+        extractExtradata( contentAsSet, builder );
+        extractPage( contentAsSet, builder );
+        extractAttachments( contentAsSet, builder );
 
         return builder;
     }
 
-    private void addUserInfo( final PropertySet contentAsSet, final Content.Builder builder )
+    private void addMetadata( final UpdateContentTranslatorParams params, final PropertySet contentAsData, final Content content )
+    {
+        contentAsData.setBoolean( ContentPropertyNames.VALID, content.isValid() );
+        contentAsData.ifNotNull().addString( DISPLAY_NAME, content.getDisplayName() );
+        contentAsData.ifNotNull().addString( TYPE, content.getType().toString() );
+        contentAsData.ifNotNull().addString( OWNER, content.getOwner() != null ? content.getOwner().toString() : null );
+        contentAsData.ifNotNull().addString( LANGUAGE, content.getLanguage() != null ? content.getLanguage().toLanguageTag() : null );
+        contentAsData.ifNotNull().addInstant( MODIFIED_TIME, content.getModifiedTime() );
+        contentAsData.ifNotNull().addString( MODIFIER, params.getModifier().toString() );
+        contentAsData.ifNotNull().addString( CREATOR, content.getCreator().toString() );
+        contentAsData.ifNotNull().addInstant( CREATED_TIME, content.getCreatedTime() );
+    }
+
+    private void addExtraData( final PropertySet contentAsData, final ExtraDatas extraDatas )
+    {
+        final PropertySet metaSet = contentAsData.addSet( EXTRA_DATA );
+        for ( final ExtraData extraData : extraDatas )
+        {
+
+            final String xDataApplicationPrefix = extraData.getApplicationPrefix();
+            PropertySet xDataApplication = metaSet.getSet( xDataApplicationPrefix );
+            if ( xDataApplication == null )
+            {
+                xDataApplication = metaSet.addSet( xDataApplicationPrefix );
+            }
+            xDataApplication.addSet( extraData.getName().getLocalName(), extraData.getData().getRoot().copy( metaSet.getTree() ) );
+        }
+    }
+
+
+    private void extractUserInfo( final PropertySet contentAsSet, final Content.Builder builder )
     {
         builder.creator( PrincipalKey.from( contentAsSet.getString( CREATOR ) ) );
         builder.createdTime( contentAsSet.getInstant( CREATED_TIME ) );
@@ -160,7 +166,7 @@ public final class ContentDataSerializer
         builder.modifiedTime( contentAsSet.getInstant( MODIFIED_TIME ) != null ? contentAsSet.getInstant( MODIFIED_TIME ) : null );
     }
 
-    private void addAttachments( final PropertySet contentAsSet, final Content.Builder builder )
+    private void extractAttachments( final PropertySet contentAsSet, final Content.Builder builder )
     {
         final Attachments attachments = dataToAttachments( contentAsSet.getSets( ATTACHMENT ) );
         builder.attachments( attachments );
@@ -175,7 +181,7 @@ public final class ContentDataSerializer
         }
     }
 
-    private void addPage( final PropertySet contentAsSet, final Content.Builder builder )
+    private void extractPage( final PropertySet contentAsSet, final Content.Builder builder )
     {
         if ( contentAsSet.hasProperty( PAGE ) )
         {
@@ -183,7 +189,7 @@ public final class ContentDataSerializer
         }
     }
 
-    private void addExtraData( final PropertySet contentAsSet, final Content.Builder builder )
+    private void extractExtradata( final PropertySet contentAsSet, final Content.Builder builder )
     {
         final PropertySet metadataSet = contentAsSet.getSet( EXTRA_DATA );
         if ( metadataSet != null )
@@ -206,7 +212,7 @@ public final class ContentDataSerializer
         }
     }
 
-    private void addLanguage( final PropertySet contentAsSet, final Content.Builder builder )
+    private void extractLanguage( final PropertySet contentAsSet, final Content.Builder builder )
     {
         String language = contentAsSet.getString( LANGUAGE );
         if ( StringUtils.isNotEmpty( language ) )
@@ -215,7 +221,7 @@ public final class ContentDataSerializer
         }
     }
 
-    private void addOwner( final PropertySet contentAsSet, final Content.Builder builder )
+    private void extractOwner( final PropertySet contentAsSet, final Content.Builder builder )
     {
         String owner = contentAsSet.getString( OWNER );
 
@@ -225,7 +231,7 @@ public final class ContentDataSerializer
         }
     }
 
-    Attachments dataToAttachments( final Iterable<PropertySet> attachmentSets )
+    private Attachments dataToAttachments( final Iterable<PropertySet> attachmentSets )
     {
         final Attachments.Builder attachments = Attachments.create();
         for ( final PropertySet attachmentAsSet : attachmentSets )
@@ -266,7 +272,8 @@ public final class ContentDataSerializer
         }
     }
 
-    private Attachments mergeAttachments( final Attachments existingAttachments, final UpdateContentTranslatorParams params )
+    private Attachments mergeExistingAndUpdatedAttachments( final Attachments existingAttachments,
+                                                            final UpdateContentTranslatorParams params )
     {
         CreateAttachments createAttachments = params.getCreateAttachments();
         BinaryReferences removeAttachments = params.getRemoveAttachments();

@@ -84,10 +84,7 @@ module api.content.form.inputtype.time {
 
             if (property.hasNonNullValue()) {
                 var date = property.getLocalDateTime();
-                dateTimeBuilder.
-                    setYear(date.getYear()).
-                    setMonth(date.getMonth()).
-                    setSelectedDate(date.toDate()).
+                dateTimeBuilder.setYear(date.getYear()).setMonth(date.getMonth()).setSelectedDate(date.toDate()).
                     setHours(date.getHours()).
                     setMinutes(date.getMinutes());
             }

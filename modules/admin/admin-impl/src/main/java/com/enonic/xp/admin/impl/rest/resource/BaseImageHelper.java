@@ -1,14 +1,16 @@
 package com.enonic.xp.admin.impl.rest.resource;
 
-import com.enonic.xp.icon.Icon;
-import com.enonic.xp.image.ImageHelper;
-import com.google.common.io.ByteStreams;
-import com.google.common.net.MediaType;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+
+import javax.imageio.ImageIO;
+
+import com.google.common.io.ByteStreams;
+import com.google.common.net.MediaType;
+
+import com.enonic.xp.icon.Icon;
+import com.enonic.xp.image.ImageHelper;
 
 public abstract class BaseImageHelper
 {
@@ -34,7 +36,7 @@ public abstract class BaseImageHelper
 
     protected final byte[] loadDefaultImage( final String imageName )
     {
-        try( final InputStream in = getClass().getResourceAsStream( imageName + ".svg" ) )
+        try (final InputStream in = getClass().getResourceAsStream( imageName + ".svg" ))
         {
             if ( in == null )
             {

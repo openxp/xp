@@ -3,7 +3,6 @@ package com.enonic.xp.core.impl.content.serializer;
 
 import com.google.common.annotations.Beta;
 
-import com.enonic.xp.core.impl.content.page.AbstractDataSetSerializer;
 import com.enonic.xp.data.PropertySet;
 import com.enonic.xp.region.Component;
 import com.enonic.xp.region.ComponentName;
@@ -18,12 +17,12 @@ public abstract class ComponentDataSerializer<TO_DATA_INPUT extends Component, F
     @Override
     public abstract FROM_DATA_OUTPUT fromData( final PropertySet asData );
 
-    protected void applyComponentToData( final Component component, final PropertySet asData )
+    void applyComponentToData( final Component component, final PropertySet asData )
     {
         asData.setString( "name", component.getName() != null ? component.getName().toString() : null );
     }
 
-    protected void applyComponentFromData( final Component.Builder component, final PropertySet asData )
+    void applyComponentFromData( final Component.Builder component, final PropertySet asData )
     {
         component.name( asData.isNotNull( "name" ) ? new ComponentName( asData.getString( "name" ) ) : null );
     }

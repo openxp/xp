@@ -114,9 +114,7 @@ module app.wizard {
                 return new CreatePageRequest(persistedContent.getContentId()).
                     setController(viewedPage.getController()).
                     setPageTemplateKey(viewedPage.getTemplate()).
-                    setConfig(viewedPage.getConfig()).
-                    setRegions(viewedPage.getRegions()).
-                    setFragment(viewedPage.getFragment()).
+                    setConfig(viewedPage.getConfig()).setRegions(viewedPage.getRegions()).setFragment(viewedPage.getFragment()).
                     setCustomized(viewedPage.isCustomized());
             }
             else if (persistedContent.isPage() && viewedContent.isPage()) {
@@ -125,9 +123,7 @@ module app.wizard {
                 return new UpdatePageRequest(persistedContent.getContentId()).
                     setController((viewedPage.getController())).
                     setPageTemplateKey((viewedPage.getTemplate())).
-                    setConfig(viewedPage.getConfig()).
-                    setRegions(viewedPage.getRegions()).
-                    setFragment(viewedPage.getFragment()).
+                    setConfig(viewedPage.getConfig()).setRegions(viewedPage.getRegions()).setFragment(viewedPage.getFragment()).
                     setCustomized(viewedPage.isCustomized());
             }
         }

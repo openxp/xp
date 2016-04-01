@@ -8,10 +8,11 @@ module app.remove {
 
         private statusDiv: api.dom.DivEl;
 
-        constructor(viewer: api.ui.Viewer<ContentSummaryAndCompareStatus>, item: BrowseItem<ContentSummaryAndCompareStatus>, removeCallback?: () => void) {
-           super(viewer, item, removeCallback);
+        constructor(viewer: api.ui.Viewer<ContentSummaryAndCompareStatus>, item: BrowseItem<ContentSummaryAndCompareStatus>,
+                    removeCallback?: () => void) {
+            super(viewer, item, removeCallback);
 
-           this.initStatusDiv(item.getModel().getCompareStatus());
+            this.initStatusDiv(item.getModel().getCompareStatus());
         }
 
         doRender(): boolean {

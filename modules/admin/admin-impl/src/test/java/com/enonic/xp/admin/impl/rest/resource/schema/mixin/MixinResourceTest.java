@@ -1,5 +1,20 @@
 package com.enonic.xp.admin.impl.rest.resource.schema.mixin;
 
+import java.awt.image.BufferedImage;
+import java.io.InputStream;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
+import javax.ws.rs.core.Response;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Resources;
+
 import com.enonic.xp.admin.impl.rest.resource.AdminResourceTestSupport;
 import com.enonic.xp.form.Input;
 import com.enonic.xp.icon.Icon;
@@ -9,20 +24,8 @@ import com.enonic.xp.schema.mixin.Mixin;
 import com.enonic.xp.schema.mixin.MixinName;
 import com.enonic.xp.schema.mixin.MixinService;
 import com.enonic.xp.schema.mixin.Mixins;
-import com.google.common.io.ByteStreams;
-import com.google.common.io.Resources;
-import org.junit.Assert;
-import org.junit.Test;
-import org.mockito.Mockito;
 
-import javax.ws.rs.core.Response;
-import java.awt.image.BufferedImage;
-import java.io.InputStream;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class MixinResourceTest
     extends AdminResourceTestSupport
@@ -130,7 +133,7 @@ public class MixinResourceTest
         final Response response = this.resource.getIcon( "myapplication:icon_svg_test", 20, null );
 
         assertNotNull( response.getEntity() );
-        org.junit.Assert.assertArrayEquals( ByteStreams.toByteArray( in ), ( byte[] )response.getEntity() );
+        org.junit.Assert.assertArrayEquals( ByteStreams.toByteArray( in ), (byte[]) response.getEntity() );
     }
 
     @Test
@@ -141,18 +144,18 @@ public class MixinResourceTest
         final Icon icon = Icon.from( data, "image/svg+xml", Instant.now() );
 
         Mixin mixin = Mixin.create().
-                name( "myapplication:icon_svg_test" ).
-                displayName( "My content type" ).
-                icon( icon ).
-                addFormItem( Input.create().name( "icon_svg_test" ).label( "SVG icon test" ).inputType( InputTypeName.TEXT_LINE ).build() ).
-                build();
+            name( "myapplication:icon_svg_test" ).
+            displayName( "My content type" ).
+            icon( icon ).
+            addFormItem( Input.create().name( "icon_svg_test" ).label( "SVG icon test" ).inputType( InputTypeName.TEXT_LINE ).build() ).
+            build();
         setupMixin( mixin );
 
         final Response response = this.resource.getIcon( "myapplication:icon_svg_test", 20, null );
 
         assertNotNull( response.getEntity() );
         assertEquals( icon.getMimeType(), response.getMediaType().toString() );
-        org.junit.Assert.assertArrayEquals( data, ( byte[] )response.getEntity() );
+        org.junit.Assert.assertArrayEquals( data, (byte[]) response.getEntity() );
     }
 
     private void setupMixin( final Mixin mixin )

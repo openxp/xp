@@ -1,10 +1,6 @@
 package com.enonic.xp.core.impl.content.serializer;
 
-import com.enonic.xp.core.impl.content.page.AbstractDataSetSerializer;
-import com.enonic.xp.core.impl.content.page.region.ComponentDataSerializer;
-import com.enonic.xp.core.impl.content.page.region.ComponentDataSerializerProvider;
 import com.enonic.xp.core.impl.content.page.region.ComponentTypes;
-import com.enonic.xp.core.impl.content.page.region.RegionDataSerializer;
 import com.enonic.xp.data.Property;
 import com.enonic.xp.data.PropertySet;
 import com.enonic.xp.page.DescriptorKey;
@@ -16,7 +12,7 @@ import com.enonic.xp.region.ComponentType;
 import com.enonic.xp.region.Region;
 import com.enonic.xp.util.Reference;
 
-import static com.enonic.xp.core.impl.content.page.region.ComponentsDataSerializer.TYPE;
+import static com.enonic.xp.core.impl.content.serializer.ComponentsDataSerializer.TYPE;
 
 public final class PageDataSerializer
     extends AbstractDataSetSerializer<Page, Page>
@@ -51,20 +47,11 @@ public final class PageDataSerializer
 
         asSet.addString( CONTROLLER, page.hasController() ? page.getController().toString() : null );
         asSet.addReference( TEMPLATE, page.hasTemplate() ? Reference.from( page.getTemplate().toString() ) : null );
+        asSet.addBoolean( CUSTOMIZED, page.isCustomized() );
 
         if ( page.hasRegions() )
         {
-            if ( !page.getRegions().isEmpty() )
-            {
-                for ( Region region : page.getRegions() )
-                {
-                    regionDataSerializer.toData( region, asSet );
-                }
-            }
-            else
-            {
-                asSet.addSet( regionDataSerializer.getPropertyName(), null );
-            }
+            toRegionData( page, asSet );
         }
 
         if ( page.hasConfig() )
@@ -72,17 +59,35 @@ public final class PageDataSerializer
             asSet.addSet( CONFIG, page.getConfig().getRoot().copy( asSet.getTree() ) );
         }
 
-        asSet.addBoolean( CUSTOMIZED, page.isCustomized() );
-
         if ( page.isFragment() )
         {
-            final PropertySet fragmentAsData = new PropertySet();
-            asSet.addSet( FRAGMENT, fragmentAsData );
+            toFragmentData( page, asSet );
+        }
+    }
 
-            final Component fragment = page.getFragment();
-            fragmentAsData.setString( TYPE, fragment.getType().getComponentClass().getSimpleName() );
-            final ComponentDataSerializer serializer = componentDataSerializerProvider.getDataSerializer( fragment.getType() );
-            serializer.toData( fragment, fragmentAsData );
+    private void toFragmentData( final Page page, final PropertySet asSet )
+    {
+        final PropertySet fragmentAsData = new PropertySet();
+        asSet.addSet( FRAGMENT, fragmentAsData );
+
+        final Component fragment = page.getFragment();
+        fragmentAsData.setString( TYPE, fragment.getType().getComponentClass().getSimpleName() );
+        final ComponentDataSerializer serializer = componentDataSerializerProvider.getDataSerializer( fragment.getType() );
+        serializer.toData( fragment, fragmentAsData );
+    }
+
+    private void toRegionData( final Page page, final PropertySet asSet )
+    {
+        if ( !page.getRegions().isEmpty() )
+        {
+            for ( Region region : page.getRegions() )
+            {
+                regionDataSerializer.toData( region, asSet );
+            }
+        }
+        else
+        {
+            asSet.addSet( regionDataSerializer.getPropertyName(), null );
         }
     }
 
@@ -90,26 +95,22 @@ public final class PageDataSerializer
     public Page fromData( final PropertySet asData )
     {
         final Page.Builder page = Page.create();
+
         if ( asData.isNotNull( CONTROLLER ) )
         {
             page.controller( DescriptorKey.from( asData.getString( CONTROLLER ) ) );
         }
+
         if ( asData.isNotNull( TEMPLATE ) )
         {
             page.template( PageTemplateKey.from( asData.getReference( TEMPLATE ).toString() ) );
         }
+
         if ( asData.hasProperty( REGION ) )
         {
-            final PageRegions.Builder pageRegionsBuilder = PageRegions.create();
-            for ( final Property regionAsProp : asData.getProperties( REGION ) )
-            {
-                if ( regionAsProp.hasNotNullValue() )
-                {
-                    pageRegionsBuilder.add( regionDataSerializer.fromData( regionAsProp.getSet() ) );
-                }
-            }
-            page.regions( pageRegionsBuilder.build() );
+            toRegionFromData( asData, page );
         }
+
         if ( asData.hasProperty( CONFIG ) )
         {
             page.config( asData.getSet( CONFIG ).toTree() );
@@ -122,14 +123,32 @@ public final class PageDataSerializer
 
         if ( asData.isNotNull( FRAGMENT ) )
         {
-            final PropertySet fragmentAsProperty = asData.getPropertySet( FRAGMENT );
-            final ComponentType type = ComponentTypes.bySimpleClassName( fragmentAsProperty.getString( TYPE ) );
-            final PropertySet componentSet = fragmentAsProperty.getSet( type.getComponentClass().getSimpleName() );
-            final Component component = componentDataSerializerProvider.getDataSerializer( type ).fromData( componentSet );
-            page.fragment( component );
+            toFragmentFromData( asData, page );
         }
 
         return page.build();
+    }
+
+    private void toRegionFromData( final PropertySet asData, final Page.Builder page )
+    {
+        final PageRegions.Builder pageRegionsBuilder = PageRegions.create();
+        for ( final Property regionAsProp : asData.getProperties( REGION ) )
+        {
+            if ( regionAsProp.hasNotNullValue() )
+            {
+                pageRegionsBuilder.add( regionDataSerializer.fromData( regionAsProp.getSet() ) );
+            }
+        }
+        page.regions( pageRegionsBuilder.build() );
+    }
+
+    private void toFragmentFromData( final PropertySet asData, final Page.Builder page )
+    {
+        final PropertySet fragmentAsProperty = asData.getPropertySet( FRAGMENT );
+        final ComponentType type = ComponentTypes.bySimpleClassName( fragmentAsProperty.getString( TYPE ) );
+        final PropertySet componentSet = fragmentAsProperty.getSet( type.getComponentClass().getSimpleName() );
+        final Component component = componentDataSerializerProvider.getDataSerializer( type ).fromData( componentSet );
+        page.fragment( component );
     }
 
 }

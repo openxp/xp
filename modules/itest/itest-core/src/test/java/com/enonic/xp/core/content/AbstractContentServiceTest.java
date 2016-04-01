@@ -245,12 +245,12 @@ public class AbstractContentServiceTest
     }
 
 
-    protected CreateAttachments createAttachment( final String name, final String mimeType, final ByteSource image )
+    protected CreateAttachments createAttachment( final String name, final String mimeType, final ByteSource byteSource )
     {
         return CreateAttachments.from( CreateAttachment.create().
             name( name ).
             mimeType( mimeType ).
-            byteSource( image ).
+            byteSource( byteSource ).
             build() );
     }
 

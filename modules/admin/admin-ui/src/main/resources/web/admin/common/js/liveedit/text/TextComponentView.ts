@@ -32,13 +32,13 @@ module api.liveedit.text {
 
         private focusOnInit: boolean;
 
-        private editorContainer:api.dom.DivEl;
+        private editorContainer: api.dom.DivEl;
 
         public static debug = false;
 
         private static DEFAULT_TEXT: string = "";
 
-        private static EDITOR_FOCUSED_CLASS:string = "editor-focused";
+        private static EDITOR_FOCUSED_CLASS: string = "editor-focused";
 
         // special handling for click to allow dblclick event without triggering 2 clicks before it
         public static DBL_CLICK_TIMEOUT = 250;
@@ -83,7 +83,7 @@ module api.liveedit.text {
             });
 
             var handleDialogCreated = (event) => {
-                if(this.currentDialogConfig == event.getConfig()) {
+                if (this.currentDialogConfig == event.getConfig()) {
                     this.modalDialog = event.getModalDialog();
                 }
             };
@@ -104,7 +104,7 @@ module api.liveedit.text {
             this.htmlAreaEditor = null;
         }
 
-        private getContentId():api.content.ContentId {
+        private getContentId(): api.content.ContentId {
             return this.liveEditModel.getContent().getContentId();
         }
 
@@ -264,7 +264,7 @@ module api.liveedit.text {
                 }
 
                 if (this.textComponent.isEmpty()) {
-                    if (!!this.htmlAreaEditor ) {
+                    if (!!this.htmlAreaEditor) {
                         this.htmlAreaEditor.setContent(TextComponentView.DEFAULT_TEXT);
                     }
                     this.rootElement.setHtml(TextComponentView.DEFAULT_TEXT, false);
@@ -307,35 +307,27 @@ module api.liveedit.text {
                 this.appendChild(this.editorContainer);
             }
 
-            new HTMLAreaBuilder().
-                setSelector('div.' + id + ' .tiny-mce-here').
-                setAssetsUri(assetsUri).
-                setInline(true).
-                onCreateDialog(event => {
+            new HTMLAreaBuilder().setSelector('div.' + id + ' .tiny-mce-here').setAssetsUri(assetsUri).setInline(true).onCreateDialog(
+                event => {
                     this.currentDialogConfig = event.getConfig();
-                }).
-                setOnFocusHandler(this.onFocusHandler.bind(this)).
-                setOnBlurHandler(this.onBlurHandler.bind(this)).
-                setOnKeydownHandler(this.onKeydownHandler.bind(this)).
-                setFixedToolbarContainer('.mce-toolbar-container').
-                setContentId(this.getContentId()).
-                createEditor().
-                then((editor: HtmlAreaEditor) => {
-                    this.htmlAreaEditor = editor;
-                    if (!!this.textComponent.getText()) {
-                        this.htmlAreaEditor.setContent(this.textComponent.getText());
-                    } else {
-                        this.htmlAreaEditor.setContent(TextComponentView.DEFAULT_TEXT);
-                        this.htmlAreaEditor.selection.select(this.htmlAreaEditor.getBody(), true);
-                    }
-                    if (this.focusOnInit) {
-                        this.htmlAreaEditor.focus();
-                        wemjq(this.htmlAreaEditor.getElement()).simulate("click");
-                    }
-                    this.focusOnInit = false;
-                    this.isInitializingEditor = false;
-                    HTMLAreaHelper.updateImageAlignmentBehaviour(editor);
-                });
+                }).setOnFocusHandler(this.onFocusHandler.bind(this)).setOnBlurHandler(this.onBlurHandler.bind(this)).setOnKeydownHandler(
+                this.onKeydownHandler.bind(this)).setFixedToolbarContainer('.mce-toolbar-container').setContentId(
+                this.getContentId()).createEditor().then((editor: HtmlAreaEditor) => {
+                this.htmlAreaEditor = editor;
+                if (!!this.textComponent.getText()) {
+                    this.htmlAreaEditor.setContent(this.textComponent.getText());
+                } else {
+                    this.htmlAreaEditor.setContent(TextComponentView.DEFAULT_TEXT);
+                    this.htmlAreaEditor.selection.select(this.htmlAreaEditor.getBody(), true);
+                }
+                if (this.focusOnInit) {
+                    this.htmlAreaEditor.focus();
+                    wemjq(this.htmlAreaEditor.getElement()).simulate("click");
+                }
+                this.focusOnInit = false;
+                this.isInitializingEditor = false;
+                HTMLAreaHelper.updateImageAlignmentBehaviour(editor);
+            });
         }
 
         private anyEditorHasFocus(): boolean {
@@ -351,8 +343,9 @@ module api.liveedit.text {
         }
 
         private processEditorValue() {
-            if(!this.htmlAreaEditor)
+            if (!this.htmlAreaEditor) {
                 return;
+            }
 
             if (this.isEditorEmpty()) {
                 this.textComponent.setText(TextComponentView.DEFAULT_TEXT);
@@ -362,7 +355,7 @@ module api.liveedit.text {
                 var editorContent = this.htmlAreaEditor.getContent();
                 this.textComponent.setText(editorContent);
                 // copy editor raw content (without any processing!) over to the root html element
-                this.rootElement.getHTMLElement().innerHTML = this.htmlAreaEditor.getContent({format : 'raw'});
+                this.rootElement.getHTMLElement().innerHTML = this.htmlAreaEditor.getContent({format: 'raw'});
             }
         }
 

@@ -10,7 +10,7 @@ import com.enonic.xp.data.PropertySet;
 import com.enonic.xp.region.Component;
 import com.enonic.xp.region.ComponentType;
 
-public final class ComponentsDataSerializer
+final class ComponentsDataSerializer
 {
     private final static ComponentDataSerializerProvider COMPONENT_DATA_SERIALIZER_FACTORY = new ComponentDataSerializerProvider();
 

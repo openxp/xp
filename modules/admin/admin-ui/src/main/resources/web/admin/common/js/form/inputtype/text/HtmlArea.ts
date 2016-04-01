@@ -130,18 +130,10 @@ module api.form.inputtype.text {
                 textAreaWrapper.addClass(focusedEditorCls);
             };
 
-            new HTMLAreaBuilder().
-                setSelector('textarea.' + id.replace(/\./g, '_')).
-                setAssetsUri(baseUrl).
-                setInline(false).
-                onCreateDialog(onCreateDialogHandler).
-                setOnFocusHandler(onFocusHandler).
-                setOnBlurHandler(onBlurHandler).
-                setOnKeydownHandler(onKeydownHandler).
-                setOnNodeChangeHandler(onNodeChangeHandler).
-                setContentId(this.contentId).
-                createEditor().
-                then((editor: HtmlAreaEditor) => {
+            new HTMLAreaBuilder().setSelector('textarea.' + id.replace(/\./g, '_')).setAssetsUri(baseUrl).setInline(false).onCreateDialog(
+                onCreateDialogHandler).setOnFocusHandler(onFocusHandler).setOnBlurHandler(onBlurHandler).setOnKeydownHandler(
+                onKeydownHandler).setOnNodeChangeHandler(onNodeChangeHandler).setContentId(this.contentId).createEditor().then(
+                (editor: HtmlAreaEditor) => {
                     this.setEditorContent(id, property);
                     if (this.notInLiveEdit()) {
                         this.setupStickyEditorToolbarForInputOccurence(textAreaWrapper);

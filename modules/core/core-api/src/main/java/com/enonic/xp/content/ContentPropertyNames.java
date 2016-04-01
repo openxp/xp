@@ -51,6 +51,16 @@ public class ContentPropertyNames
 
     public static final String ATTACHMENT = "attachment";
 
+    public static final String ATTACHMENT_LABEL = "label";
+
+    public static final String ATTACHMENT_NAME = "name";
+
+    public static final String ATTACHMENT_MIMETYPE = "mimeType";
+
+    public static final String ATTACHMENT_BINARY_REF = "binary";
+
+    public static final String ATTACHMENT_SIZE = "size";
+
     public static final String OWNER = "owner";
 
     public static final String LANGUAGE = "language";
