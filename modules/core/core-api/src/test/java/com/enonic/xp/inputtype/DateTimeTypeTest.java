@@ -50,7 +50,7 @@ public class DateTimeTypeTest
     @Test
     public void testCreateDefaultValue()
     {
-        final InputTypeConfig config = InputTypeConfig.create().
+        final InputTypeDefault config = InputTypeDefault.create().
             property( InputTypeProperty.create( "default", "2014-08-16T05:03:45" ).
                 build() ).
             build();
@@ -66,7 +66,7 @@ public class DateTimeTypeTest
     @Test
     public void testCreateDefaultValue_withTimezone()
     {
-        final InputTypeConfig config = InputTypeConfig.create().
+        final InputTypeDefault config = InputTypeDefault.create().
             property( InputTypeProperty.create( "default", "2014-08-16T10:03:45Z" ).
                 build() ).
             build();
@@ -82,7 +82,7 @@ public class DateTimeTypeTest
     @Test(expected = IllegalArgumentException.class)
     public void testCreateDefaultValue_invalid()
     {
-        final InputTypeConfig config = InputTypeConfig.create().
+        final InputTypeDefault config = InputTypeDefault.create().
             property( InputTypeProperty.create( "default", "2014-18-16T05:03:45" ).
                 build() ).
             build();

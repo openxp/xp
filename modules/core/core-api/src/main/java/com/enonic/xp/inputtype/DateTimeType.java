@@ -38,24 +38,24 @@ final class DateTimeType
     }
 
     @Override
-    public Value createDefaultValue( final InputTypeConfig defaultConfig )
+    public Value createDefaultValue( final InputTypeDefault defaultConfig )
     {
-        final InputTypeProperty defaultProperty = defaultConfig.getProperty( "default" );
-        if ( defaultProperty != null )
+        final String defaultValue = defaultConfig.getRootValue();
+        if ( defaultValue != null )
         {
             try
             {
-                return ValueFactory.newDateTime( ValueTypes.DATE_TIME.convert( defaultProperty.getValue() ) );
+                return ValueFactory.newDateTime( ValueTypes.DATE_TIME.convert( defaultValue ) );
             }
             catch ( ValueTypeException e )
             {
                 try
                 {
-                    return ValueFactory.newLocalDateTime( ValueTypes.LOCAL_DATE_TIME.convert( defaultProperty.getValue() ) );
+                    return ValueFactory.newLocalDateTime( ValueTypes.LOCAL_DATE_TIME.convert( defaultValue ) );
                 }
                 catch ( ValueTypeException e1 )
                 {
-                    throw new IllegalArgumentException("Invalid DateTime format: " + defaultProperty.getValue());
+                    throw new IllegalArgumentException("Invalid DateTime format: " + defaultValue);
                 }
             }
         }
