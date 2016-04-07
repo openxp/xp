@@ -91,21 +91,14 @@ public final class HttpRequestHandler
     private Request getRequest()
     {
         final Request.Builder request = new Request.Builder();
-        request.url( this.url );
+        setRequestUrl( request );
+        setRequestHeaders( request );
+        setRequestMethod( request );
+        return request.build();
+    }
 
-        RequestBody requestBody = null;
-        if ( this.params != null && !this.params.isEmpty() )
-        {
-            final FormEncodingBuilder formBody = new FormEncodingBuilder();
-            addParams( formBody, this.params );
-            requestBody = formBody.build();
-        }
-        else if ( this.body != null && !this.body.isEmpty() )
-        {
-            final MediaType mediaType = this.contentType != null ? MediaType.parse( this.contentType ) : null;
-            requestBody = RequestBody.create( mediaType, this.body );
-        }
-
+    private void setRequestUrl( Request.Builder request )
+    {
         if ( "GET".equals( this.method ) )
         {
             HttpUrl url = HttpUrl.parse( this.url );
@@ -114,24 +107,56 @@ public final class HttpRequestHandler
                 url = addParams( url, this.params );
             }
             request.url( url );
+        }
+        else
+        {
+            request.url( this.url );
+        }
+    }
+
+    private void setRequestHeaders( Request.Builder request )
+    {
+        if ( "GET".equals( this.method ) )
+        {
             if ( this.contentType != null )
             {
                 request.header( "Content-Type", this.contentType );
             }
-            request.get();
         }
-        else
+
+        if ( this.headers != null )
         {
+            for ( Map.Entry<String, String> header : this.headers.entrySet() )
+            {
+                request.header( header.getKey(), header.getValue() );
+            }
+        }
+    }
+
+    private void setRequestMethod( Request.Builder request )
+    {
+        RequestBody requestBody = null;
+        if ( HttpMethod.permitsRequestBody( this.method ) )
+        {
+            if ( this.params != null && !this.params.isEmpty() )
+            {
+                final FormEncodingBuilder formBody = new FormEncodingBuilder();
+                addParams( formBody, this.params );
+                requestBody = formBody.build();
+            }
+            else if ( this.body != null && !this.body.isEmpty() )
+            {
+                final MediaType mediaType = this.contentType != null ? MediaType.parse( this.contentType ) : null;
+                requestBody = RequestBody.create( mediaType, this.body );
+            }
             if ( requestBody == null && HttpMethod.requiresRequestBody( this.method ) )
             {
                 final MediaType mediaType = this.contentType != null ? MediaType.parse( this.contentType ) : null;
                 requestBody = RequestBody.create( mediaType, "" );
             }
-            request.method( this.method, requestBody );
         }
 
-        addHeaders( request, this.headers );
-        return request.build();
+        request.method( this.method, requestBody );
     }
 
     private HttpUrl addParams( final HttpUrl url, final Map<String, Object> params )
@@ -154,17 +179,6 @@ public final class HttpRequestHandler
             if ( header.getValue() != null )
             {
                 formBody.add( header.getKey(), header.getValue().toString() );
-            }
-        }
-    }
-
-    private void addHeaders( final Request.Builder request, final Map<String, String> headers )
-    {
-        if ( headers != null )
-        {
-            for ( Map.Entry<String, String> header : headers.entrySet() )
-            {
-                request.header( header.getKey(), header.getValue() );
             }
         }
     }
