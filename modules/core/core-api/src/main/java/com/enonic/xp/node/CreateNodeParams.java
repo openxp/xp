@@ -39,7 +39,7 @@ public class CreateNodeParams
 
     private final NodeType nodeType;
 
-    private final BinaryAttachments binaryAttachments;
+    private final CreateBinaries createBinaries;
 
     private CreateNodeParams( Builder builder )
     {
@@ -54,7 +54,7 @@ public class CreateNodeParams
         this.insertManualStrategy = builder.insertManualStrategy;
         this.manualOrderValue = builder.manualOrderValue;
         this.nodeType = builder.nodeType;
-        this.binaryAttachments = new BinaryAttachments( ImmutableSet.copyOf( builder.binaryAttachments ) );
+        this.createBinaries = new CreateBinaries( ImmutableSet.copyOf( builder.createBinaries ) );
     }
 
     public static Builder create()
@@ -140,9 +140,9 @@ public class CreateNodeParams
         return nodeType;
     }
 
-    public BinaryAttachments getBinaryAttachments()
+    public CreateBinaries getCreateBinaries()
     {
-        return binaryAttachments;
+        return createBinaries;
     }
 
     @Override
@@ -166,7 +166,7 @@ public class CreateNodeParams
             Objects.equals( childOrder, that.childOrder ) &&
             Objects.equals( permissions, that.permissions ) &&
             Objects.equals( nodeType, that.nodeType ) &&
-            Objects.equals( binaryAttachments, that.binaryAttachments ) &&
+            Objects.equals( createBinaries, that.createBinaries ) &&
             inheritPermissions == that.inheritPermissions;
     }
 
@@ -174,7 +174,7 @@ public class CreateNodeParams
     public int hashCode()
     {
         return Objects.hash( parent, name, data, indexConfigDocument, childOrder, nodeId, permissions, inheritPermissions, nodeType,
-                             binaryAttachments );
+                             createBinaries );
     }
 
     public static final class Builder
@@ -201,7 +201,7 @@ public class CreateNodeParams
 
         private NodeType nodeType;
 
-        private Set<BinaryAttachment> binaryAttachments = Sets.newHashSet();
+        private Set<CreateBinary> createBinaries = Sets.newHashSet();
 
         private Builder()
         {
@@ -221,7 +221,7 @@ public class CreateNodeParams
             this.insertManualStrategy = createNodeParams.insertManualStrategy;
             this.manualOrderValue = createNodeParams.manualOrderValue;
             this.nodeType = createNodeParams.nodeType;
-            this.binaryAttachments = createNodeParams.binaryAttachments.getSet();
+            this.createBinaries = createNodeParams.createBinaries.getSet();
         }
 
         public Builder setNodeId( final NodeId nodeId )
@@ -292,18 +292,18 @@ public class CreateNodeParams
 
         public Builder attachBinary( final BinaryReference binaryReference, final ByteSource byteSource )
         {
-            this.binaryAttachments.add( new BinaryAttachment( binaryReference, byteSource ) );
+            this.createBinaries.add( new CreateBinary( binaryReference, byteSource ) );
             return this;
         }
 
-        public Builder setBinaryAttachments( final BinaryAttachments binaryAttachments )
+        public Builder setCreateBinaries( final CreateBinaries createBinaries )
         {
-            if ( binaryAttachments == null )
+            if ( createBinaries == null )
             {
                 return this;
             }
 
-            this.binaryAttachments = Sets.newHashSet( binaryAttachments );
+            this.createBinaries = Sets.newHashSet( createBinaries );
             return this;
         }
 

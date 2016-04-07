@@ -2,7 +2,7 @@ package com.enonic.xp.node;
 
 public class ImportNodeParams
 {
-    private final BinaryAttachments binaryAttachments;
+    private final CreateBinaries createBinaries;
 
     private final Node node;
 
@@ -14,7 +14,7 @@ public class ImportNodeParams
 
     private ImportNodeParams( Builder builder )
     {
-        binaryAttachments = builder.binaryAttachments;
+        createBinaries = builder.createBinaries;
         node = builder.node;
         insertManualStrategy = builder.insertManualStrategy;
         dryRun = builder.dryRun;
@@ -36,9 +36,9 @@ public class ImportNodeParams
         return insertManualStrategy;
     }
 
-    public BinaryAttachments getBinaryAttachments()
+    public CreateBinaries getCreateBinaries()
     {
-        return binaryAttachments;
+        return createBinaries;
     }
 
     public boolean isDryRun()
@@ -53,7 +53,7 @@ public class ImportNodeParams
 
     public static final class Builder
     {
-        private BinaryAttachments binaryAttachments;
+        private CreateBinaries createBinaries;
 
         private Node node;
 
@@ -67,9 +67,9 @@ public class ImportNodeParams
         {
         }
 
-        public Builder binaryAttachments( BinaryAttachments binaryAttachments )
+        public Builder binaryAttachments( CreateBinaries createBinaries )
         {
-            this.binaryAttachments = binaryAttachments;
+            this.createBinaries = createBinaries;
             return this;
         }
 

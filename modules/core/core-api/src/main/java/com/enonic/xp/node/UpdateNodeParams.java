@@ -17,7 +17,7 @@ public class UpdateNodeParams
 
     private final NodeEditor editor;
 
-    private final BinaryAttachments binaryAttachments;
+    private final CreateBinaries createBinaries;
 
     private final boolean dryRun;
 
@@ -25,13 +25,13 @@ public class UpdateNodeParams
     {
         this.id = builder.id;
         this.editor = builder.editor;
-        this.binaryAttachments = new BinaryAttachments( ImmutableSet.copyOf( builder.binaryAttachments ) );
+        this.createBinaries = new CreateBinaries( ImmutableSet.copyOf( builder.createBinaries ) );
         this.dryRun = builder.dryRun;
     }
 
-    public BinaryAttachments getBinaryAttachments()
+    public CreateBinaries getCreateBinaries()
     {
-        return binaryAttachments;
+        return createBinaries;
     }
 
     public static Builder create()
@@ -60,7 +60,7 @@ public class UpdateNodeParams
 
         private NodeEditor editor;
 
-        private Set<BinaryAttachment> binaryAttachments = Sets.newHashSet();
+        private Set<CreateBinary> createBinaries = Sets.newHashSet();
 
         private boolean dryRun = false;
 
@@ -82,13 +82,13 @@ public class UpdateNodeParams
 
         public Builder attachBinary( final BinaryReference binaryReference, final ByteSource byteSource )
         {
-            this.binaryAttachments.add( new BinaryAttachment( binaryReference, byteSource ) );
+            this.createBinaries.add( new CreateBinary( binaryReference, byteSource ) );
             return this;
         }
 
-        public Builder setBinaryAttachments( final BinaryAttachments binaryAttachments )
+        public Builder setCreateBinaries( final CreateBinaries createBinaries )
         {
-            this.binaryAttachments = binaryAttachments != null ? binaryAttachments.getSet() : Sets.newHashSet();
+            this.createBinaries = createBinaries != null ? createBinaries.getSet() : Sets.newHashSet();
             return this;
         }
 

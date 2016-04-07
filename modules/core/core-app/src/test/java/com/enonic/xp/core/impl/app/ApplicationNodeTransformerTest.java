@@ -12,8 +12,8 @@ import com.enonic.xp.app.ApplicationKey;
 import com.enonic.xp.data.PropertyTree;
 import com.enonic.xp.node.AttachedBinaries;
 import com.enonic.xp.node.AttachedBinary;
-import com.enonic.xp.node.BinaryAttachment;
-import com.enonic.xp.node.BinaryAttachments;
+import com.enonic.xp.node.CreateBinaries;
+import com.enonic.xp.node.CreateBinary;
 import com.enonic.xp.node.CreateNodeParams;
 import com.enonic.xp.node.Node;
 import com.enonic.xp.node.NodeId;
@@ -47,9 +47,9 @@ public class ApplicationNodeTransformerTest
 
         assertNotNull( binaryReference );
 
-        final BinaryAttachment binaryAttachment = createNodeParams.getBinaryAttachments().get( binaryReference );
+        final CreateBinary createBinary = createNodeParams.getCreateBinaries().get( binaryReference );
 
-        assertEquals( appSource, binaryAttachment.getByteSource() );
+        assertEquals( appSource, createBinary.getByteSource() );
     }
 
 
@@ -82,8 +82,8 @@ public class ApplicationNodeTransformerTest
         final ByteSource updatedSource = ByteSource.wrap( ByteStreams.toByteArray( newBundle( "myBundleUpdated", true ).build() ) );
         final UpdateNodeParams updateNodeParams = ApplicationNodeTransformer.toUpdateNodeParams( app, updatedSource, existingNode );
 
-        final BinaryAttachments binaryAttachments = updateNodeParams.getBinaryAttachments();
+        final CreateBinaries createBinaries = updateNodeParams.getCreateBinaries();
 
-        assertEquals( updatedSource, binaryAttachments.get( appReference ).getByteSource() );
+        assertEquals( updatedSource, createBinaries.get( appReference ).getByteSource() );
     }
 }

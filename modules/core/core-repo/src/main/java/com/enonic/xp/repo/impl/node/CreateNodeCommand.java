@@ -13,7 +13,7 @@ import com.enonic.xp.data.ValueTypes;
 import com.enonic.xp.index.ChildOrder;
 import com.enonic.xp.node.AttachedBinaries;
 import com.enonic.xp.node.AttachedBinary;
-import com.enonic.xp.node.BinaryAttachment;
+import com.enonic.xp.node.CreateBinary;
 import com.enonic.xp.node.CreateNodeParams;
 import com.enonic.xp.node.FindNodesByParentParams;
 import com.enonic.xp.node.FindNodesByParentResult;
@@ -118,15 +118,15 @@ public final class CreateNodeCommand
 
         for ( final Property binaryRef : binaryReferences )
         {
-            final BinaryAttachment binaryAttachment = this.params.getBinaryAttachments().get( binaryRef.getBinaryReference() );
+            final CreateBinary createBinary = this.params.getCreateBinaries().get( binaryRef.getBinaryReference() );
 
-            if ( binaryAttachment == null )
+            if ( createBinary == null )
             {
                 throw new NodeBinaryReferenceException( "No binary with reference " + binaryRef + " attached in createNodeParams" );
             }
 
-            final BlobRecord blob = this.binaryBlobStore.addRecord( NodeConstants.BINARY_SEGMENT, binaryAttachment.getByteSource() );
-            builder.add( new AttachedBinary( binaryAttachment.getReference(), blob.getKey().toString() ) );
+            final BlobRecord blob = this.binaryBlobStore.addRecord( NodeConstants.BINARY_SEGMENT, createBinary.getByteSource() );
+            builder.add( new AttachedBinary( createBinary.getReference(), blob.getKey().toString() ) );
         }
 
         return builder.build();

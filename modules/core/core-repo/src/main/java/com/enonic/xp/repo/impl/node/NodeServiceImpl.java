@@ -618,7 +618,7 @@ public class NodeServiceImpl
     public ImportNodeResult importNode( final ImportNodeParams params )
     {
         final ImportNodeResult importNodeResult = ImportNodeCommand.create().
-            binaryAttachments( params.getBinaryAttachments() ).
+            binaryAttachments( params.getCreateBinaries() ).
             importNode( params.getNode() ).
             insertManualStrategy( params.getInsertManualStrategy() ).
             dryRun( params.isDryRun() ).

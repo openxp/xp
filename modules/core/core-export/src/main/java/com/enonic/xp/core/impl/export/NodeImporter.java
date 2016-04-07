@@ -21,8 +21,8 @@ import com.enonic.xp.data.PropertyTree;
 import com.enonic.xp.data.ValueTypes;
 import com.enonic.xp.export.ImportNodeException;
 import com.enonic.xp.export.NodeImportResult;
-import com.enonic.xp.node.BinaryAttachment;
-import com.enonic.xp.node.BinaryAttachments;
+import com.enonic.xp.node.CreateBinaries;
+import com.enonic.xp.node.CreateBinary;
 import com.enonic.xp.node.CreateNodeParams;
 import com.enonic.xp.node.ImportNodeParams;
 import com.enonic.xp.node.ImportNodeResult;
@@ -217,7 +217,7 @@ public final class NodeImporter
     private ImportNodeResult importNode( final VirtualFile nodeFolder, final ProcessNodeSettings.Builder processNodeSettings,
                                          final Node serializedNode, final NodePath importNodePath )
     {
-        final BinaryAttachments binaryAttachments = processBinaryAttachments( nodeFolder, serializedNode );
+        final CreateBinaries createBinaries = processBinaryAttachments( nodeFolder, serializedNode );
 
         final ProcessNodeSettings settings = processNodeSettings.build();
         final Node importNode = ImportNodeFactory.create().
@@ -231,7 +231,7 @@ public final class NodeImporter
 
         final ImportNodeParams importNodeParams = ImportNodeParams.create().
             importNode( importNode ).
-            binaryAttachments( binaryAttachments ).
+            binaryAttachments( createBinaries ).
             insertManualStrategy( settings.getInsertManualStrategy() ).
             dryRun( this.dryRun ).
             importPermissions( this.importPermissions ).
@@ -249,7 +249,7 @@ public final class NodeImporter
         return orderFile.getCharSource().readLines();
     }
 
-    private BinaryAttachments processBinaryAttachments( final VirtualFile nodeFile, final Node newNode )
+    private CreateBinaries processBinaryAttachments( final VirtualFile nodeFile, final Node newNode )
     {
         final PropertyTree data = newNode.data();
 
@@ -257,10 +257,10 @@ public final class NodeImporter
 
         if ( binaryReferences.isEmpty() )
         {
-            return BinaryAttachments.empty();
+            return CreateBinaries.empty();
         }
 
-        final BinaryAttachments.Builder builder = BinaryAttachments.create();
+        final CreateBinaries.Builder builder = CreateBinaries.create();
 
         for ( final Property binaryReference : binaryReferences )
         {
@@ -270,14 +270,14 @@ public final class NodeImporter
         return builder.build();
     }
 
-    private void addBinary( final VirtualFile nodeFile, final BinaryAttachments.Builder builder, final Property binaryRefProperty )
+    private void addBinary( final VirtualFile nodeFile, final CreateBinaries.Builder builder, final Property binaryRefProperty )
     {
         final BinaryReference binaryReference = binaryRefProperty.getBinaryReference();
 
         try
         {
             final VirtualFile binary = exportReader.getBinarySource( nodeFile, binaryReference.toString() );
-            builder.add( new BinaryAttachment( binaryReference, binary.getByteSource() ) );
+            builder.add( new CreateBinary( binaryReference, binary.getByteSource() ) );
 
             result.addBinary( binary.getPath().getPath(), binaryReference );
         }

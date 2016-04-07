@@ -18,8 +18,8 @@ import com.enonic.xp.data.PropertyVisitor;
 import com.enonic.xp.data.ValueTypes;
 import com.enonic.xp.node.AttachedBinaries;
 import com.enonic.xp.node.AttachedBinary;
-import com.enonic.xp.node.BinaryAttachment;
-import com.enonic.xp.node.BinaryAttachments;
+import com.enonic.xp.node.CreateBinaries;
+import com.enonic.xp.node.CreateBinary;
 import com.enonic.xp.node.EditableNode;
 import com.enonic.xp.node.Node;
 import com.enonic.xp.node.NodeBinaryReferenceException;
@@ -34,7 +34,7 @@ class UpdatedAttachedBinariesResolver
 
     private final BlobStore blobStore;
 
-    private final BinaryAttachments binaryAttachments;
+    private final CreateBinaries createBinaries;
 
     private final BinaryReferences currentBinaryReferences;
 
@@ -45,7 +45,7 @@ class UpdatedAttachedBinariesResolver
         persistedNode = builder.persistedNode;
         editableNode = builder.editableNode;
         blobStore = builder.blobStore;
-        binaryAttachments = builder.binaryAttachments;
+        createBinaries = builder.createBinaries;
 
         final Set<BinaryReference> referencesInEditedNode = new ReferenceResolver().resolve( this.editableNode.data );
         this.currentBinaryReferences = BinaryReferences.from( referencesInEditedNode );
@@ -59,7 +59,7 @@ class UpdatedAttachedBinariesResolver
 
         final Sets.SetView<BinaryReference> changedBinaryReferences = Sets.difference( referencesInEditedNode, referencesInPersistedNode );
 
-        if ( changedBinaryReferences.isEmpty() && this.binaryAttachments.isEmpty() )
+        if ( changedBinaryReferences.isEmpty() && this.createBinaries.isEmpty() )
         {
             return persistedNode.getAttachedBinaries();
         }
@@ -79,7 +79,7 @@ class UpdatedAttachedBinariesResolver
     {
         for ( final BinaryReference binaryReference : changedBinaryReferences )
         {
-            final boolean attachmentGivenOrExistsOnNodeAlready = this.binaryAttachments.get( binaryReference ) != null ||
+            final boolean attachmentGivenOrExistsOnNodeAlready = this.createBinaries.get( binaryReference ) != null ||
                 persistedNode.getAttachedBinaries().getByBinaryReference( binaryReference ) != null;
 
             if ( !attachmentGivenOrExistsOnNodeAlready )
@@ -91,11 +91,11 @@ class UpdatedAttachedBinariesResolver
 
     private void updateAttachedBinaries( final Map<BinaryReference, AttachedBinary> resolved )
     {
-        for ( final BinaryAttachment binaryAttachment : this.binaryAttachments )
+        for ( final CreateBinary createBinary : this.createBinaries )
         {
-            if ( this.currentBinaryReferences.contains( binaryAttachment.getReference() ) )
+            if ( this.currentBinaryReferences.contains( createBinary.getReference() ) )
             {
-                storeAndAttachBinary( resolved, binaryAttachment );
+                storeAndAttachBinary( resolved, createBinary );
             }
             else
             {
@@ -123,11 +123,10 @@ class UpdatedAttachedBinariesResolver
         }
     }
 
-    private void storeAndAttachBinary( final Map<BinaryReference, AttachedBinary> resolved, final BinaryAttachment newBinaryAttachment )
+    private void storeAndAttachBinary( final Map<BinaryReference, AttachedBinary> resolved, final CreateBinary newCreateBinary )
     {
-        final BlobRecord blob = this.blobStore.addRecord( NodeConstants.BINARY_SEGMENT, newBinaryAttachment.getByteSource() );
-        resolved.put( newBinaryAttachment.getReference(),
-                      new AttachedBinary( newBinaryAttachment.getReference(), blob.getKey().toString() ) );
+        final BlobRecord blob = this.blobStore.addRecord( NodeConstants.BINARY_SEGMENT, newCreateBinary.getByteSource() );
+        resolved.put( newCreateBinary.getReference(), new AttachedBinary( newCreateBinary.getReference(), blob.getKey().toString() ) );
     }
 
     static Builder create()
@@ -143,7 +142,7 @@ class UpdatedAttachedBinariesResolver
 
         private BlobStore blobStore;
 
-        private BinaryAttachments binaryAttachments;
+        private CreateBinaries createBinaries;
 
         private Builder()
         {
@@ -167,9 +166,9 @@ class UpdatedAttachedBinariesResolver
             return this;
         }
 
-        Builder binaryAttachments( BinaryAttachments binaryAttachments )
+        Builder binaryAttachments( CreateBinaries createBinaries )
         {
-            this.binaryAttachments = binaryAttachments;
+            this.createBinaries = createBinaries;
             return this;
         }
 

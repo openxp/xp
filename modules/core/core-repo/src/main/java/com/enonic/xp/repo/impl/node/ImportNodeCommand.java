@@ -1,7 +1,7 @@
 package com.enonic.xp.repo.impl.node;
 
 import com.enonic.xp.blob.BlobStore;
-import com.enonic.xp.node.BinaryAttachments;
+import com.enonic.xp.node.CreateBinaries;
 import com.enonic.xp.node.CreateNodeParams;
 import com.enonic.xp.node.ImportNodeResult;
 import com.enonic.xp.node.InsertManualStrategy;
@@ -13,7 +13,7 @@ public class ImportNodeCommand
 {
     private final InsertManualStrategy insertManualStrategy;
 
-    private final BinaryAttachments binaryAttachments;
+    private final CreateBinaries createBinaries;
 
     private final Node importNode;
 
@@ -27,7 +27,7 @@ public class ImportNodeCommand
     {
         super( builder );
         this.insertManualStrategy = builder.insertManualStrategy;
-        this.binaryAttachments = builder.binaryAttachments;
+        this.createBinaries = builder.createBinaries;
         this.importNode = builder.importNode;
         this.binaryBlobStore = builder.binaryBlobStore;
         this.dryRun = builder.dryRun;
@@ -72,7 +72,7 @@ public class ImportNodeCommand
             setNodeId( this.importNode.id() ).
             nodeType( this.importNode.getNodeType() ).
             childOrder( this.importNode.getChildOrder() ).
-            setBinaryAttachments( this.binaryAttachments ).
+            setCreateBinaries( this.createBinaries ).
             data( this.importNode.data() ).
             indexConfigDocument( this.importNode.getIndexConfigDocument() ).
             insertManualStrategy( this.insertManualStrategy ).
@@ -97,7 +97,7 @@ public class ImportNodeCommand
         final UpdateNodeParams updateNodeParams = UpdateNodeParams.create().
             dryRun( this.dryRun ).
             id( existingNode.id() ).
-            setBinaryAttachments( this.binaryAttachments ).
+            setCreateBinaries( this.createBinaries ).
             editor( editableNode -> {
                 editableNode.data = this.importNode.data();
                 if ( this.importPermissions )
@@ -119,7 +119,7 @@ public class ImportNodeCommand
     {
         private InsertManualStrategy insertManualStrategy;
 
-        private BinaryAttachments binaryAttachments;
+        private CreateBinaries createBinaries;
 
         private Node importNode;
 
@@ -140,9 +140,9 @@ public class ImportNodeCommand
             return this;
         }
 
-        public Builder binaryAttachments( BinaryAttachments binaryAttachments )
+        public Builder binaryAttachments( CreateBinaries createBinaries )
         {
-            this.binaryAttachments = binaryAttachments;
+            this.createBinaries = createBinaries;
             return this;
         }
 

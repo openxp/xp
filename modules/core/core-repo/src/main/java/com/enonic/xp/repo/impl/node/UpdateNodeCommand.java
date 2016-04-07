@@ -66,7 +66,7 @@ public final class UpdateNodeCommand
         final AttachedBinaries updatedBinaries = UpdatedAttachedBinariesResolver.create().
             editableNode( editableNode ).
             persistedNode( persistedNode ).
-            binaryAttachments( this.params.getBinaryAttachments() ).
+            binaryAttachments( this.params.getCreateBinaries() ).
             binaryBlobStore( this.binaryBlobStore ).
             build().
             resolve();

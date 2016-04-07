@@ -14,7 +14,7 @@ import com.enonic.xp.branch.Branch;
 import com.enonic.xp.node.ApplyNodePermissionsParams;
 import com.enonic.xp.node.AttachedBinaries;
 import com.enonic.xp.node.AttachedBinary;
-import com.enonic.xp.node.BinaryAttachment;
+import com.enonic.xp.node.CreateBinary;
 import com.enonic.xp.node.CreateNodeParams;
 import com.enonic.xp.node.CreateRootNodeParams;
 import com.enonic.xp.node.DeleteSnapshotParams;
@@ -97,11 +97,11 @@ class NodeServiceMock
 
         final AttachedBinaries.Builder attachmentBuilder = AttachedBinaries.create();
 
-        for ( final BinaryAttachment binaryAttachment : params.getBinaryAttachments() )
+        for ( final CreateBinary createBinary : params.getCreateBinaries() )
         {
-            final String blobKey = binaryAttachment.getReference().toString();
-            attachmentBuilder.add( new AttachedBinary( binaryAttachment.getReference(), blobKey ) );
-            blobStore.put( binaryAttachment.getReference(), binaryAttachment.getByteSource() );
+            final String blobKey = createBinary.getReference().toString();
+            attachmentBuilder.add( new AttachedBinary( createBinary.getReference(), blobKey ) );
+            blobStore.put( createBinary.getReference(), createBinary.getByteSource() );
         }
 
         builder.attachedBinaries( attachmentBuilder.build() );
@@ -422,7 +422,7 @@ class NodeServiceMock
         final boolean preExist = this.nodePathMap.get( importNode.path() ) != null;
 
         final Node createdNode = doCreate( CreateNodeParams.create().
-            setBinaryAttachments( params.getBinaryAttachments() ).
+            setCreateBinaries( params.getCreateBinaries() ).
             childOrder( importNode.getChildOrder() ).
             data( importNode.data() ).
             indexConfigDocument( importNode.getIndexConfigDocument() ).
