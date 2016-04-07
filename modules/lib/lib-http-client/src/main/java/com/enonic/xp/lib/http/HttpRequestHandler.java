@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.io.ByteSource;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.MediaType;
@@ -27,7 +28,9 @@ public final class HttpRequestHandler
 
     private int readTimeout = 10_000;
 
-    private String body;
+    private String bodyString;
+
+    private ByteSource bodyStream;
 
     private String contentType;
 
@@ -72,7 +75,12 @@ public final class HttpRequestHandler
 
     public void setBody( final String value )
     {
-        this.body = value;
+        this.bodyString = value;
+    }
+
+    public void setBody( final ByteSource value )
+    {
+        this.bodyStream = value;
     }
 
     public void setContentType( final String contentType )
@@ -144,11 +152,17 @@ public final class HttpRequestHandler
                 addParams( formBody, this.params );
                 requestBody = formBody.build();
             }
-            else if ( this.body != null && !this.body.isEmpty() )
+            else if ( this.bodyString != null && !this.bodyString.isEmpty() )
             {
                 final MediaType mediaType = this.contentType != null ? MediaType.parse( this.contentType ) : null;
-                requestBody = RequestBody.create( mediaType, this.body );
+                requestBody = RequestBody.create( mediaType, this.bodyString );
             }
+            else if ( this.bodyStream != null )
+            {
+                final MediaType mediaType = this.contentType != null ? MediaType.parse( this.contentType ) : null;
+                requestBody = new StreamRequestBody( mediaType, this.bodyStream );
+            }
+
             if ( requestBody == null && HttpMethod.requiresRequestBody( this.method ) )
             {
                 final MediaType mediaType = this.contentType != null ? MediaType.parse( this.contentType ) : null;
