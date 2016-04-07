@@ -17,9 +17,9 @@ public final class HttpRequestHandler
 {
     private String url;
 
-    private Map<String, Object> params;
-
     private String method = "GET";
+
+    private Map<String, Object> params;
 
     private Map<String, String> headers;
 
@@ -27,33 +27,13 @@ public final class HttpRequestHandler
 
     private int readTimeout = 10_000;
 
-    private String contentType;
-
     private String body;
 
-    public void setContentType( final String contentType )
-    {
-        this.contentType = contentType;
-    }
-
-    public void setBody( final String value )
-    {
-        this.body = value;
-    }
-
-    public void setHeaders( final Map<String, String> headers )
-    {
-        this.headers = headers;
-    }
+    private String contentType;
 
     public void setUrl( final String value )
     {
         this.url = value;
-    }
-
-    public void setParams( final Map<String, Object> params )
-    {
-        this.params = params;
     }
 
     public void setMethod( final String value )
@@ -62,6 +42,16 @@ public final class HttpRequestHandler
         {
             this.method = value.trim().toUpperCase();
         }
+    }
+
+    public void setParams( final Map<String, Object> params )
+    {
+        this.params = params;
+    }
+
+    public void setHeaders( final Map<String, String> headers )
+    {
+        this.headers = headers;
     }
 
     public void setConnectionTimeout( final Integer value )
@@ -80,20 +70,22 @@ public final class HttpRequestHandler
         }
     }
 
+    public void setBody( final String value )
+    {
+        this.body = value;
+    }
+
+    public void setContentType( final String contentType )
+    {
+        this.contentType = contentType;
+    }
+
     public ResponseMapper request()
         throws IOException
     {
-        final Response response = sendRequest( getRequest() );
+        final Request request = getRequest();
+        final Response response = sendRequest( request );
         return new ResponseMapper( response );
-    }
-
-    private Response sendRequest( final Request request )
-        throws IOException
-    {
-        final OkHttpClient client = new OkHttpClient();
-        client.setReadTimeout( this.readTimeout, TimeUnit.MILLISECONDS );
-        client.setConnectTimeout( this.connectionTimeout, TimeUnit.MILLISECONDS );
-        return client.newCall( request ).execute();
     }
 
     private Request getRequest()
@@ -145,11 +137,11 @@ public final class HttpRequestHandler
     private HttpUrl addParams( final HttpUrl url, final Map<String, Object> params )
     {
         HttpUrl.Builder urlBuilder = url.newBuilder();
-        for ( Map.Entry<String, Object> header : params.entrySet() )
+        for ( Map.Entry<String, Object> param : params.entrySet() )
         {
-            if ( header.getValue() != null )
+            if ( param.getValue() != null )
             {
-                urlBuilder.addEncodedQueryParameter( header.getKey(), header.getValue().toString() );
+                urlBuilder.addEncodedQueryParameter( param.getKey(), param.getValue().toString() );
             }
         }
         return urlBuilder.build();
@@ -175,6 +167,15 @@ public final class HttpRequestHandler
                 request.header( header.getKey(), header.getValue() );
             }
         }
+    }
+
+    private Response sendRequest( final Request request )
+        throws IOException
+    {
+        final OkHttpClient client = new OkHttpClient();
+        client.setReadTimeout( this.readTimeout, TimeUnit.MILLISECONDS );
+        client.setConnectTimeout( this.connectionTimeout, TimeUnit.MILLISECONDS );
+        return client.newCall( request ).execute();
     }
 
 }

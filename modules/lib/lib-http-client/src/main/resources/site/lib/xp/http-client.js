@@ -31,13 +31,13 @@ function checkRequired(params, name) {
  *
  * @param {object} params JSON parameters.
  * @param {string} params.url URL to which the request is sent.
- * @param {string} [params.method=GET] The HTTP method to use for the request (e.g. "POST", "GET", "PUT"). Optional, default value is 'GET'.
- * @param {object} [params.params] Query or form parameters to be sent with the request. Optional.
- * @param {object} [params.headers] HTTP headers, an object where the keys are header names and the values the header values. Optional.
+ * @param {string} [params.method=GET] The HTTP method to use for the request (e.g. "POST", "GET", "PUT").
+ * @param {object} [params.params] Query or form parameters to be sent with the request.
+ * @param {object} [params.headers] HTTP headers, an object where the keys are header names and the values the header values.
  * @param {number} [params.connectionTimeout=10000] The timeout on establishing the connection, in milliseconds. Default 10000ms (10s).
  * @param {number} [params.readTimeout=10000] The timeout on waiting to receive data, in milliseconds. Default 10000ms (10s).
- * @param {string} [params.body] Body content to send with the request, usually for POST or PUT requests. Optional.
- * @param {string} [params.contentType] Content type of the request. Optional.
+ * @param {string} [params.body] Body content to send with the request, usually for POST or PUT requests.
+ * @param {string} [params.contentType] Content type of the request.
  *
  * @return {Response} response HTTP response received.
  */
