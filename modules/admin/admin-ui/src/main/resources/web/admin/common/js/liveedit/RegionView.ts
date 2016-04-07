@@ -102,9 +102,9 @@ module api.liveedit {
 
             super(new ItemViewBuilder().
                 setItemViewIdProducer(builder.parentView.getItemViewIdProducer()).
-                setType(RegionItemType.get()).
-                setElement(builder.element).
-                setPlaceholder(new RegionPlaceholder(builder.region)).setTooltipViewer(new RegionComponentViewer()).setParentElement(
+                setType(RegionItemType.get()).setElement(builder.element).setPlaceholder(
+                new RegionPlaceholder(builder.region)).setTooltipViewer(
+                new RegionComponentViewer()).setParentElement(
                 builder.parentElement).setParentView(
                 builder.parentView).setContextMenuActions(
                 this.createRegionContextMenuActions(builder.parentView.getLiveEditModel())).

@@ -393,16 +393,14 @@ module api.content.page {
                 var config = configUnchanged ? null : this.config;
 
                 return new PageBuilder().
-                    setTemplate(this.getTemplateKey()).
-                    setRegions(regions).
-                    setConfig(config).setCustomized(this.isCustomized()).setFragment(this.fragment).
+                    setTemplate(this.getTemplateKey()).setRegions(regions).setConfig(config).setCustomized(this.isCustomized()).setFragment(
+                    this.fragment).
                     build();
             }
             else if (this.mode == PageMode.FORCED_CONTROLLER) {
                 return new PageBuilder().
-                    setController(this.controller.getKey()).
-                    setRegions(this.regions).
-                    setConfig(this.config).setCustomized(this.isCustomized()).setFragment(this.fragment).
+                    setController(this.controller.getKey()).setRegions(this.regions).setConfig(this.config).setCustomized(
+                    this.isCustomized()).setFragment(this.fragment).
                     build();
             }
             else if (this.mode == PageMode.NO_CONTROLLER) {
