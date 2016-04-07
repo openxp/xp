@@ -33,9 +33,7 @@ module api.content.form.inputtype.time {
 
             if (!property.hasNullValue()) {
                 var date = property.getLocalDate();
-                datePickerBuilder.
-                    setSelectedDate(date.toDate()).
-                    setYear(date.getYear()).
+                datePickerBuilder.setSelectedDate(date.toDate()).setYear(date.getYear()).
                     setMonth(date.getMonth());
             }
             var datePicker = datePickerBuilder.build();

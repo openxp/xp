@@ -42,11 +42,11 @@ module api.liveedit.fragment {
                 if (this.isInsideLayout()) {
                     new GetContentByIdRequest(fragmentContent.getContentId()).sendAndParse().done((content: Content) => {
                         let fragmentComponent = content.getPage() ? content.getPage().getFragment() : null;
-                        
+
                         if (fragmentComponent && api.ObjectHelper.iFrameSafeInstanceOf(fragmentComponent.getType(), LayoutComponentType)) {
                             this.comboBox.clearSelection();
                             new api.liveedit.ShowWarningLiveEditEvent("Layout within layout not allowed").fire();
-                            
+
                         } else {
                             component.setFragment(fragmentContent.getContentId(), fragmentContent.getDisplayName());
                             this.fragmentComponentView.showLoadingSpinner();

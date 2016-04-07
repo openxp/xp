@@ -407,8 +407,9 @@ module app.wizard {
                     var app = applications[i];
                     if (!app.isStarted()) {
                         var deferred = wemQ.defer<Mixin[]>();
-                        deferred.reject(new api.Exception("Application '" + app.getDisplayName() + "' required by the site is not available. " +
-                                                          "Make sure all applications specified in the site configuration are installed and started.",
+                        deferred.reject(
+                            new api.Exception("Application '" + app.getDisplayName() + "' required by the site is not available. " +
+                                              "Make sure all applications specified in the site configuration are installed and started.",
                             api.ExceptionType.WARNING));
                         return deferred.promise;
                     }

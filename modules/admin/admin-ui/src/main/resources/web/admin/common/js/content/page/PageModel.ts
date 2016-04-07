@@ -395,24 +395,20 @@ module api.content.page {
                 return new PageBuilder().
                     setTemplate(this.getTemplateKey()).
                     setRegions(regions).
-                    setConfig(config).
-                    setCustomized(this.isCustomized()).
-                    setFragment(this.fragment).
+                    setConfig(config).setCustomized(this.isCustomized()).setFragment(this.fragment).
                     build();
             }
             else if (this.mode == PageMode.FORCED_CONTROLLER) {
                 return new PageBuilder().
                     setController(this.controller.getKey()).
                     setRegions(this.regions).
-                    setConfig(this.config).
-                    setCustomized(this.isCustomized()).
-                    setFragment(this.fragment).
+                    setConfig(this.config).setCustomized(this.isCustomized()).setFragment(this.fragment).
                     build();
             }
             else if (this.mode == PageMode.NO_CONTROLLER) {
                 if (this.contentHasNonRenderableTemplateSet()) {
-                    return new PageBuilder().
-                        setTemplate(this.liveEditModel.getContent().getPage().getTemplate()).setFragment(this.fragment).
+                    return new PageBuilder().setTemplate(this.liveEditModel.getContent().getPage().getTemplate()).setFragment(
+                        this.fragment).
                         build();
                 }
                 else {

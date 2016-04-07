@@ -24,7 +24,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.enonic.xp.query.expr.*;
 import org.apache.commons.lang.StringUtils;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -136,6 +135,14 @@ import com.enonic.xp.context.ContextAccessor;
 import com.enonic.xp.index.ChildOrder;
 import com.enonic.xp.jaxrs.JaxRsComponent;
 import com.enonic.xp.jaxrs.JaxRsExceptions;
+import com.enonic.xp.query.expr.CompareExpr;
+import com.enonic.xp.query.expr.ConstraintExpr;
+import com.enonic.xp.query.expr.FieldExpr;
+import com.enonic.xp.query.expr.FieldOrderExpr;
+import com.enonic.xp.query.expr.LogicalExpr;
+import com.enonic.xp.query.expr.OrderExpr;
+import com.enonic.xp.query.expr.QueryExpr;
+import com.enonic.xp.query.expr.ValueExpr;
 import com.enonic.xp.schema.content.ContentTypeService;
 import com.enonic.xp.schema.relationship.RelationshipTypeService;
 import com.enonic.xp.security.Principal;
@@ -1152,7 +1159,7 @@ public final class ContentResource
         return result.getTotalHits();
     }
 
-    private QueryExpr constructExprToFindChildren(final ContentPaths contentsPaths )
+    private QueryExpr constructExprToFindChildren( final ContentPaths contentsPaths )
     {
         final FieldExpr fieldExpr = FieldExpr.from( "_path" );
 
@@ -1162,8 +1169,7 @@ public final class ContentResource
         {
             if ( !contentPath.equals( contentsPaths.first() ) )
             {
-                ConstraintExpr likeExpr =
-                    CompareExpr.like( fieldExpr, ValueExpr.string( "/content" + contentPath + "/*" ) );
+                ConstraintExpr likeExpr = CompareExpr.like( fieldExpr, ValueExpr.string( "/content" + contentPath + "/*" ) );
                 expr = LogicalExpr.or( expr, likeExpr );
             }
         }
@@ -1174,13 +1180,14 @@ public final class ContentResource
     private ContentSummaryListJson getDescendantsOfContents( final ContentPaths contentsPaths )
     {
         FindContentByQueryResult result = this.contentService.find( FindContentByQueryParams.create().
-                contentQuery( ContentQuery.create().size( Integer.MAX_VALUE ).queryExpr( constructExprToFindChildren( contentsPaths ) ).build() ).
-                build() );
+            contentQuery(
+                ContentQuery.create().size( Integer.MAX_VALUE ).queryExpr( constructExprToFindChildren( contentsPaths ) ).build() ).
+            build() );
 
         final ContentListMetaData metaData = ContentListMetaData.create().
-                totalHits( result.getTotalHits() ).
-                hits( result.getHits() ).
-                build();
+            totalHits( result.getTotalHits() ).
+            hits( result.getHits() ).
+            build();
 
         return new ContentSummaryListJson( result.getContents(), metaData, contentIconUrlResolver );
     }

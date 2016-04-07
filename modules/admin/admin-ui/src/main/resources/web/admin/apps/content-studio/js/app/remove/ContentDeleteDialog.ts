@@ -42,7 +42,7 @@ module app.remove {
 
             this.renderSelectedItems(this.selectedItems);
             this.updateSubTitle();
-            if(this.selectedItems.length === 1) {
+            if (this.selectedItems.length === 1) {
                 this.selectedItems[0].hideRemoveButton();
             }
 
@@ -87,7 +87,7 @@ module app.remove {
         private addDeleteActionHandler() {
             this.getDeleteAction().onExecuted(() => {
 
-                if(!!this.yesCallback) {
+                if (!!this.yesCallback) {
                     this.yesCallback();
                 }
 
@@ -135,7 +135,7 @@ module app.remove {
                 }
                 else {
                     this.updateSubTitle();
-                    if(this.selectedItems.length === 1) {
+                    if (this.selectedItems.length === 1) {
                         this.selectedItems[0].hideRemoveButton();
                     }
 
@@ -211,10 +211,10 @@ module app.remove {
         }
 
         private updateSubTitle() {
-            if(!this.atLeastOneInitialItemHasChild()) {
+            if (!this.atLeastOneInitialItemHasChild()) {
                 this.updateSubTitleText("");
             }
-            else if(this.selectedItems.length > 1) {
+            else if (this.selectedItems.length > 1) {
                 this.updateSubTitleText("Delete selected items and their child content");
             }
             else {
@@ -230,10 +230,11 @@ module app.remove {
         }
 
         loadData(selectedItems: SelectionItem<ContentSummaryAndCompareStatus>[]): wemQ.Promise<void> {
-            return this.createRequestForGettingItemsDescendants(selectedItems).sendAndParse().then((result: api.content.ContentResponse<ContentSummary>) => {
-                this.setItems(result.getContents());
-                this.prependChild(new api.dom.H6El("descendants-header").setHtml("Other items that will be deleted"));
-            });
+            return this.createRequestForGettingItemsDescendants(selectedItems).sendAndParse().then(
+                (result: api.content.ContentResponse<ContentSummary>) => {
+                    this.setItems(result.getContents());
+                    this.prependChild(new api.dom.H6El("descendants-header").setHtml("Other items that will be deleted"));
+                });
         }
 
         createItemView(item: ContentSummary, readOnly: boolean): api.dom.Element {

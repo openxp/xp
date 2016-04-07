@@ -1,11 +1,11 @@
 package com.enonic.xp.core.impl.schema;
 
+import java.io.InputStream;
+import java.time.Instant;
+
 import com.enonic.xp.app.ApplicationKey;
 import com.enonic.xp.icon.Icon;
 import com.enonic.xp.resource.Resource;
-
-import java.io.InputStream;
-import java.time.Instant;
 
 public final class SchemaHelper
 {
@@ -13,7 +13,7 @@ public final class SchemaHelper
     {
         final String metaInfFolderBasePath = "/" + "META-INF" + "/" + metaInfFolderName;
         final String filePath = metaInfFolderBasePath + "/" + name.toLowerCase();
-        final Icon svgIcon =  doLoadIcon( clz, "image/svg+xml", filePath + ".svg" );
+        final Icon svgIcon = doLoadIcon( clz, "image/svg+xml", filePath + ".svg" );
 
         if ( svgIcon != null )
         {
@@ -27,7 +27,7 @@ public final class SchemaHelper
 
     private static Icon doLoadIcon( final Class clz, final String mimeType, final String filePath )
     {
-        try ( final InputStream stream = clz.getResourceAsStream( filePath ) )
+        try (final InputStream stream = clz.getResourceAsStream( filePath ))
         {
             if ( stream == null )
             {

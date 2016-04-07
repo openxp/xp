@@ -21,7 +21,7 @@ import static com.enonic.xp.media.MediaInfo.IMAGE_INFO_METADATA_NAME;
 import static com.enonic.xp.media.MediaInfo.IMAGE_INFO_PIXEL_SIZE;
 import static com.enonic.xp.media.MediaInfo.MEDIA_INFO_BYTE_SIZE;
 
-final class BuiltinMixinsTypes
+class BuiltinMixinsTypes
 {
     private static final String MIXINS_FOLDER = "mixins";
 
@@ -42,6 +42,7 @@ final class BuiltinMixinsTypes
         displayName( "Gps Info" ).
         form( createGpsInfoMixinForm() ).
         build();
+
 
     private static final Mixins MIXINS = Mixins.from( IMAGE_METADATA, CAMERA_METADATA, GPS_METADATA );
 
@@ -96,22 +97,27 @@ final class BuiltinMixinsTypes
         return form.build();
     }
 
-    private static Input.Builder createTextLine( final String name, final String label )
+    protected static Input.Builder createTextLine( final String name, final String label )
     {
         return Input.create().inputType( InputTypeName.TEXT_LINE ).label( label ).name( name ).immutable( true );
     }
 
-    private static Input.Builder createLong( final String name, final String label )
+    protected static Input.Builder createTextArea( final String name, final String label )
+    {
+        return Input.create().inputType( InputTypeName.TEXT_AREA ).label( label ).name( name ).immutable( true );
+    }
+
+    protected static Input.Builder createLong( final String name, final String label )
     {
         return Input.create().inputType( InputTypeName.LONG ).label( label ).name( name ).immutable( true );
     }
 
-    private static Input.Builder createDate( final String name, final String label )
+    protected static Input.Builder createDate( final String name, final String label )
     {
         return Input.create().inputType( InputTypeName.DATE_TIME ).label( label ).name( name ).immutable( true );
     }
 
-    private static Input.Builder createGeoPoint( final String name, final String label )
+    protected static Input.Builder createGeoPoint( final String name, final String label )
     {
         return Input.create().inputType( InputTypeName.GEO_POINT ).label( label ).name( name ).immutable( true );
     }

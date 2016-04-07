@@ -26,11 +26,8 @@ module app.wizard.page.contextwindow.insert {
             setDescription("Write directly on the page").
             setIconCls("text");
 
-        private static FRAGMENT: Insertable = new Insertable().
-            setName("fragment").
-            setDisplayName("Fragment").
-            setDescription("Reusable components").
-            setIconCls("fragment");
+        private static FRAGMENT: Insertable = new Insertable().setName("fragment").setDisplayName("Fragment").setDescription(
+            "Reusable components").setIconCls("fragment");
 
         public static ALL: Insertable[] = [Insertables.IMAGE, Insertables.PART, Insertables.LAYOUT,
             Insertables.TEXT, Insertables.FRAGMENT];

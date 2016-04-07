@@ -1,22 +1,17 @@
 package com.enonic.xp.core.impl.media;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.apache.tika.detect.Detector;
-import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.AutoDetectParser;
-import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 import com.google.common.io.ByteSource;
 
+import com.enonic.xp.media.ExtractedTextInfo;
 import com.enonic.xp.media.ImageOrientation;
 import com.enonic.xp.media.MediaInfo;
 import com.enonic.xp.media.MediaInfoService;
@@ -30,16 +25,34 @@ public final class MediaInfoServiceImpl
 
     private Detector detector;
 
+    private MediaParser mediaParser;
+
+    @Activate
+    public void activate()
+    {
+        this.mediaParser = new MediaParser( detector, parser );
+    }
+
     @Override
     public MediaInfo parseMediaInfo( final ByteSource byteSource )
     {
         final MediaInfo.Builder builder = MediaInfo.create();
-        final Metadata metadata = parseMetadata( byteSource );
 
-        // Get the detected media-type
+        final ParsedMediaData parsedMediaData = mediaParser.parseMetadata( byteSource );
+
+        addMetadata( byteSource, builder, parsedMediaData );
+
+        builder.setExtratedTextInfo( new ExtractedTextInfo( parsedMediaData.getContent() ) );
+
+        return builder.build();
+    }
+
+    private void addMetadata( final ByteSource byteSource, final MediaInfo.Builder builder, final ParsedMediaData parsedMediaData )
+    {
+        final Metadata metadata = parsedMediaData.getMetadata();
+
         builder.mediaType( metadata.get( Metadata.CONTENT_TYPE ) );
 
-        // Append metadata to info object
         final String[] names = metadata.names();
         for ( final String name : names )
         {
@@ -54,8 +67,6 @@ public final class MediaInfoServiceImpl
         {
             throw Exceptions.unchecked( e );
         }
-
-        return builder.build();
     }
 
     @Override
@@ -68,22 +79,30 @@ public final class MediaInfoServiceImpl
 
     private Metadata parseMetadata( final ByteSource byteSource )
     {
+        return this.mediaParser.parseMetadata( byteSource ).getMetadata();
+
+        /*
         final ParseContext context = new ParseContext();
-        final ContentHandler handler = new DefaultHandler();
+        final ContentHandler handler = new BodyContentHandler();
         final Metadata metadata = new Metadata();
 
         // Parse metadata
         try (final InputStream stream = byteSource.openStream())
         {
             final AutoDetectParser autoDetectParser = new AutoDetectParser( this.detector, this.parser );
+
             autoDetectParser.parse( stream, handler, metadata, context );
+
         }
         catch ( IOException | SAXException | TikaException e )
         {
             throw Exceptions.unchecked( e );
         }
 
+        System.out.println( handler.toString() );
+
         return metadata;
+        */
     }
 
     @Reference

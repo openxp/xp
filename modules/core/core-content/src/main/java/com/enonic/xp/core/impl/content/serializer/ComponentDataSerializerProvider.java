@@ -1,4 +1,4 @@
-package com.enonic.xp.core.impl.content.page.region;
+package com.enonic.xp.core.impl.content.serializer;
 
 import com.enonic.xp.region.ComponentType;
 import com.enonic.xp.region.FragmentComponentType;
@@ -7,7 +7,7 @@ import com.enonic.xp.region.LayoutComponentType;
 import com.enonic.xp.region.PartComponentType;
 import com.enonic.xp.region.TextComponentType;
 
-public final class ComponentDataSerializerProvider
+final class ComponentDataSerializerProvider
 {
     private final PartComponentDataSerializer partDataSerializer = new PartComponentDataSerializer();
 

@@ -67,9 +67,6 @@ module api.liveedit.text {
             this.rootElement.getHTMLElement().onpaste = this.handlePasteEvent.bind(this);
 
             this.onAdded(() => { // is triggered on item insert or move
-                if (api.BrowserHelper.isFirefox() && !!tinymce.activeEditor) {
-                    tinymce.activeEditor.fire('blur');
-                }
                 this.focusOnInit = true;
                 this.addClass(TextComponentView.EDITOR_FOCUSED_CLASS);
                 if (!this.htmlAreaEditor && !this.isInitializingEditor) {
@@ -177,7 +174,6 @@ module api.liveedit.text {
             this.startPageTextEditMode();
             if (!!this.htmlAreaEditor) {
                 this.htmlAreaEditor.focus();
-                this.addClass(TextComponentView.EDITOR_FOCUSED_CLASS);
             }
             api.liveedit.Highlighter.get().hide();
         }
@@ -255,12 +251,6 @@ module api.liveedit.text {
                     this.processEditorValue();
                 }
                 this.removeClass(TextComponentView.EDITOR_FOCUSED_CLASS);
-                if (api.BrowserHelper.isFirefox()) {
-                    var activeEditor = tinymce.activeEditor;
-                    if (!!activeEditor) {
-                        activeEditor.fire('blur');
-                    }
-                }
             }
 
             this.toggleClass('edit-mode', flag);
@@ -290,6 +280,7 @@ module api.liveedit.text {
         private onBlurHandler(e) {
             this.removeClass(TextComponentView.EDITOR_FOCUSED_CLASS);
 
+
             setTimeout(() => {
                 if (!this.anyEditorHasFocus()) {
                     this.closePageTextEditMode();
@@ -298,13 +289,7 @@ module api.liveedit.text {
         }
 
         private onKeydownHandler(e) {
-            var saveShortcut = (e.keyCode == 83 && (e.ctrlKey || e.metaKey));
-
-            if (saveShortcut) { //Cmd-S
-                this.processEditorValue();
-            }
-
-            if (e.keyCode == 27 || saveShortcut) { // esc or Cmd-S
+            if (e.keyCode == 27) { // esc
                 this.closePageTextEditMode();
                 this.removeClass(TextComponentView.EDITOR_FOCUSED_CLASS);
             }
@@ -322,45 +307,27 @@ module api.liveedit.text {
                 this.appendChild(this.editorContainer);
             }
 
-            var forceEditorFocus: () => void = () => {
-                this.htmlAreaEditor.focus();
-                wemjq(this.htmlAreaEditor.getElement()).simulate("click");
-            }
-
-            new HTMLAreaBuilder().
-                setSelector('div.' + id + ' .tiny-mce-here').
-                setAssetsUri(assetsUri).
-                setInline(true).
-                onCreateDialog(event => {
+            new HTMLAreaBuilder().setSelector('div.' + id + ' .tiny-mce-here').setAssetsUri(assetsUri).setInline(true).onCreateDialog(
+                event => {
                     this.currentDialogConfig = event.getConfig();
-                }).
-                setOnFocusHandler(this.onFocusHandler.bind(this)).
-                setOnBlurHandler(this.onBlurHandler.bind(this)).
-                setOnKeydownHandler(this.onKeydownHandler.bind(this)).
-                setFixedToolbarContainer('.mce-toolbar-container').
-                setContentId(this.getContentId()).
-                createEditor().
-                then((editor: HtmlAreaEditor) => {
-                    this.htmlAreaEditor = editor;
-                    if (!!this.textComponent.getText()) {
-                        this.htmlAreaEditor.setContent(this.textComponent.getText());
-                    } else {
-                        this.htmlAreaEditor.setContent(TextComponentView.DEFAULT_TEXT);
-                        this.htmlAreaEditor.selection.select(this.htmlAreaEditor.getBody(), true);
-                    }
-                    if (this.focusOnInit) {
-                        if (api.BrowserHelper.isFirefox()) {
-                            setTimeout(() => {
-                                forceEditorFocus();
-                            }, 100);
-                        } else {
-                            forceEditorFocus();
-                        }
-                    }
-                    this.focusOnInit = false;
-                    this.isInitializingEditor = false;
-                    HTMLAreaHelper.updateImageAlignmentBehaviour(editor);
-                });
+                }).setOnFocusHandler(this.onFocusHandler.bind(this)).setOnBlurHandler(this.onBlurHandler.bind(this)).setOnKeydownHandler(
+                this.onKeydownHandler.bind(this)).setFixedToolbarContainer('.mce-toolbar-container').setContentId(
+                this.getContentId()).createEditor().then((editor: HtmlAreaEditor) => {
+                this.htmlAreaEditor = editor;
+                if (!!this.textComponent.getText()) {
+                    this.htmlAreaEditor.setContent(this.textComponent.getText());
+                } else {
+                    this.htmlAreaEditor.setContent(TextComponentView.DEFAULT_TEXT);
+                    this.htmlAreaEditor.selection.select(this.htmlAreaEditor.getBody(), true);
+                }
+                if (this.focusOnInit) {
+                    this.htmlAreaEditor.focus();
+                    wemjq(this.htmlAreaEditor.getElement()).simulate("click");
+                }
+                this.focusOnInit = false;
+                this.isInitializingEditor = false;
+                HTMLAreaHelper.updateImageAlignmentBehaviour(editor);
+            });
         }
 
         private anyEditorHasFocus(): boolean {

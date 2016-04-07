@@ -1,15 +1,16 @@
-package com.enonic.xp.core.impl.content.page.region;
+package com.enonic.xp.core.impl.content.serializer;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.enonic.xp.core.impl.content.page.region.ComponentTypes;
 import com.enonic.xp.data.Property;
 import com.enonic.xp.data.PropertySet;
 import com.enonic.xp.region.Component;
 import com.enonic.xp.region.ComponentType;
 
-public final class ComponentsDataSerializer
+final class ComponentsDataSerializer
 {
     private final static ComponentDataSerializerProvider COMPONENT_DATA_SERIALIZER_FACTORY = new ComponentDataSerializerProvider();
 

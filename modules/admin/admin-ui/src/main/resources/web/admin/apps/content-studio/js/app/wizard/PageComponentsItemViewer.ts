@@ -27,8 +27,7 @@ module app.wizard {
             } else if (api.ObjectHelper.iFrameSafeInstanceOf(object.getType(), FragmentItemType)) {
                 let fragmentView = <FragmentComponentView> object;
                 let fragmentComponent = fragmentView.getFragmentRootComponent();
-                if (fragmentComponent)
-                {
+                if (fragmentComponent) {
                     if (api.ObjectHelper.iFrameSafeInstanceOf(fragmentComponent, TextComponent)) {
                         return this.extractTextFromTextComponent(<TextComponent>fragmentComponent);
                     }

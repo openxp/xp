@@ -120,10 +120,8 @@ module app.view {
                     if (this.isVisible()) {
                         if (item.getModel().getContentSummary().getType().equals(ContentTypeName.MEDIA_VECTOR)) {
                             this.getEl().addClass("svg-preview");
-                            var imgUrl = new ContentImageUrlResolver().
-                                setContentId(item.getModel().getContentId()).
-                                setTimestamp(item.getModel().getContentSummary().getModifiedTime()).
-                                resolve();
+                            var imgUrl = new ContentImageUrlResolver().setContentId(item.getModel().getContentId()).setTimestamp(
+                                item.getModel().getContentSummary().getModifiedTime()).resolve();
                             this.image.setSrc(imgUrl);
                         } else {
                             this.addImageSizeToUrl(item);

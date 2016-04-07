@@ -167,7 +167,7 @@ module api.util.htmlarea.editor {
                 setup: (editor) => {
                     editor.addCommand("openLinkDialog", this.notifyLinkDialog, this);
                     editor.addCommand("openAnchorDialog", this.notifyAnchorDialog, this);
-                    editor.addCommand("openImageDialog", this.notifyImageDialog, this) ;
+                    editor.addCommand("openImageDialog", this.notifyImageDialog, this);
                     editor.on('NodeChange', (e) => {
                         if (!!this.onNodeChangeHandler) {
                             this.onNodeChangeHandler(e);
@@ -233,27 +233,20 @@ module api.util.htmlarea.editor {
         }
 
         private notifyLinkDialog(config) {
-            let event = CreateHtmlAreaDialogEvent.create().
-                setConfig(config).
-                setType(api.util.htmlarea.dialog.HtmlAreaDialogType.LINK).
-                build();
+            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+                api.util.htmlarea.dialog.HtmlAreaDialogType.LINK).build();
             this.publishCreateDialogEvent(event);
         }
 
         private notifyImageDialog(config) {
-            let event = CreateHtmlAreaDialogEvent.create().
-                setConfig(config).
-                setType(api.util.htmlarea.dialog.HtmlAreaDialogType.IMAGE).
-                setContentId(this.contentId).
-                build();
+            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+                api.util.htmlarea.dialog.HtmlAreaDialogType.IMAGE).setContentId(this.contentId).build();
             this.publishCreateDialogEvent(event);
         }
 
         private notifyAnchorDialog(config) {
-            let event = CreateHtmlAreaDialogEvent.create().
-                setConfig(config).
-                setType(api.util.htmlarea.dialog.HtmlAreaDialogType.ANCHOR).
-                build();
+            let event = CreateHtmlAreaDialogEvent.create().setConfig(config).setType(
+                api.util.htmlarea.dialog.HtmlAreaDialogType.ANCHOR).build();
             this.publishCreateDialogEvent(event);
         }
 

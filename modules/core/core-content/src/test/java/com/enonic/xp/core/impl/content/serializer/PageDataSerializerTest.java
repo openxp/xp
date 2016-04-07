@@ -1,4 +1,4 @@
-package com.enonic.xp.core.impl.content.page;
+package com.enonic.xp.core.impl.content.serializer;
 
 import org.junit.Test;
 

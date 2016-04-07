@@ -118,10 +118,8 @@ module api.content.form.inputtype.upload {
         private manageSVGImageIfPresent(content: api.content.Content) {
             if (content.getType().isVectorMedia()) {
                 this.addClass("with-svg-image");
-                var imgUrl = new api.content.ContentImageUrlResolver().
-                    setContentId(this.getContext().contentId).
-                    setTimestamp(content.getModifiedTime()).
-                    resolve();
+                var imgUrl = new api.content.ContentImageUrlResolver().setContentId(this.getContext().contentId).setTimestamp(
+                    content.getModifiedTime()).resolve();
 
                 this.svgImage.setSrc(imgUrl);
             } else {
@@ -187,10 +185,8 @@ module api.content.form.inputtype.upload {
 
                 var content = this.config.formContext.getPersistedContent();
 
-                var imgUrl = new api.content.ContentImageUrlResolver().
-                    setContentId(this.getContext().contentId).
-                    setTimestamp(content.getModifiedTime()).
-                    resolve();
+                var imgUrl = new api.content.ContentImageUrlResolver().setContentId(this.getContext().contentId).setTimestamp(
+                    content.getModifiedTime()).resolve();
 
                 this.svgImage.setSrc(imgUrl);
 

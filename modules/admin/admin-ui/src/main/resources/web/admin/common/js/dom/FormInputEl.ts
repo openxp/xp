@@ -18,31 +18,27 @@ module api.dom {
             super(tagName, className, prefix);
             this.addClass('form-input');
 
-            if (FormInputEl.debug) {
-                console.groupCollapsed(this.toString() + ".constructor: setting originalValue = " +
-                                       this.originalValue + ", oldValue = " + this.oldValue);
-            }
+            this.originalValue = !api.util.StringHelper.isBlank(originalValue) ? originalValue : "";
+            this.oldValue = String(this.originalValue);
 
-            // Descendant class might override my methods
-            // therefore set value on added to make sure it's ready
-            this.onAdded((event) => {
-                if (!api.util.StringHelper.isBlank(originalValue)) {
+            if (this.originalValue != "") {
+                // Descendant class might override my methods
+                // therefore set value on added to make sure it's ready
+                this.onAdded((event) => {
                     if (FormInputEl.debug) {
-                        console.debug(this.toString() + '.onAdded: setting original value = "' + originalValue + '"');
+                        console.debug(this.toString() + '.onAdded: setting original value = ' + this.originalValue);
                     }
-                    // use this prototype's setValue because descendants might override setValue method (i.e. CheckBox, RadioGroup)
-                    FormInputEl.prototype.setValue.call(this, originalValue, true);
-                }
-            });
+                    // use doSetValue because descendants might override setValue method (i.e. CheckBox, RadioGroup)
+                    this.doSetValue(originalValue, true);
+                    // doGetValue instead of value in case input trims/modifies value (i.e. textarea strips \r chars)
+                    this.originalValue = this.doGetValue();
+                });
+            }
 
             this.onChange((event: Event) => {
                 this.refreshDirtyState();
                 this.refreshValueChanged();
             });
-
-            if (FormInputEl.debug) {
-                console.groupEnd();
-            }
         }
 
         getValue(): string {
@@ -73,7 +69,8 @@ module api.dom {
             if (FormInputEl.debug) {
                 console.groupCollapsed(this.toString() + '.setValue(' + value + ')');
             }
-            if (this.oldValue != value) {
+            // let userInput force value update
+            if (this.oldValue != value || userInput) {
                 if (FormInputEl.debug) {
                     console.debug('update value from "' + this.oldValue + '" to "' + value + '"');
                 }
@@ -84,18 +81,15 @@ module api.dom {
                     // update original value if not dirty and not user input
                     // to keep the dirty state consistent
                     if (FormInputEl.debug) {
-                        console.debug('not dirty and not user input, update originalValue from "' + this.originalValue + '" to "' + value +
+                        console.debug('not dirty and not user input, update original value from "' + this.originalValue + '" to "' + value +
                                       '"');
                     }
-                    this.originalValue = "" + value;
+                    // doGetValue instead of value in case input trims/modifies value (i.e. textarea strips \r chars)
+                    this.originalValue = this.doGetValue();
                 } else {
                     // update dirty according to new value and original value
                     // to keep dirty state consistent
                     this.refreshDirtyState(silent);
-                }
-            } else {
-                if (FormInputEl.debug) {
-                    console.debug("oldValue is equal to new value = " + value + ", skipping setValue...");
                 }
             }
             if (FormInputEl.debug) {
@@ -151,16 +145,12 @@ module api.dom {
 
             if (this.oldValue != value) {
                 if (FormInputEl.debug) {
-                    console.debug(this.toString() + ' value changed from "' + this.oldValue + '" to "' + value + '"');
+                    console.debug(this.toString() + ' value changed to "' + value + '"');
                 }
                 if (!silent) {
                     this.notifyValueChanged(new api.ValueChangedEvent(this.oldValue, value));
                 }
                 this.oldValue = "" + value;
-            } else {
-                if (FormInputEl.debug) {
-                    console.debug("oldValue is equal to new value = " + value + ", skipping refreshValueChanged...");
-                }
             }
         }
 

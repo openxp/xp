@@ -1,5 +1,7 @@
 package com.enonic.xp.core.content;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,7 +11,9 @@ import org.mockito.Mockito;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteSource;
+import com.google.common.io.ByteStreams;
 
+import com.enonic.xp.attachment.Attachment;
 import com.enonic.xp.attachment.AttachmentNames;
 import com.enonic.xp.attachment.Attachments;
 import com.enonic.xp.attachment.CreateAttachment;
@@ -31,6 +35,7 @@ import com.enonic.xp.schema.content.GetContentTypeParams;
 import com.enonic.xp.schema.mixin.Mixin;
 import com.enonic.xp.schema.mixin.MixinName;
 import com.enonic.xp.security.acl.AccessControlList;
+import com.enonic.xp.util.BinaryReference;
 
 import static org.junit.Assert.*;
 
@@ -431,4 +436,49 @@ public class ContentServiceImplTest_update
         assertEquals( newThumbnail.size(), thumbnailAttachment.getSize() );
     }
 
+    @Test
+    public void update_attachment()
+        throws Exception
+    {
+        final CreateContentParams createContentParams = CreateContentParams.create().
+            contentData( new PropertyTree() ).
+            displayName( "This is my content" ).
+            parent( ContentPath.ROOT ).
+            type( ContentTypeName.imageMedia() ).
+            createAttachments( createAttachment( "myText", "text/plain", ByteSource.wrap( "This is my original data".getBytes() ) ) ).
+            build();
+
+        final Content content = this.contentService.create( createContentParams );
+
+        final UpdateContentParams updateContentParams = new UpdateContentParams();
+        final String updatedText = "This is my updated data";
+        updateContentParams.
+            contentId( content.getId() ).
+            clearAttachments( true ).
+            createAttachments( createAttachment( "myUpdatedText", "text/plain", ByteSource.wrap( updatedText.getBytes() ) ) );
+
+        this.contentService.update( updateContentParams );
+
+        final Content storedContent = this.contentService.getById( content.getId() );
+
+        final Attachments attachments = storedContent.getAttachments();
+        assertEquals( 1, attachments.getSize() );
+        final Attachment updatedAttachment = attachments.byName( "myUpdatedText" );
+        assertNotNull( updatedAttachment );
+        final BinaryReference binaryReference = updatedAttachment.getBinaryReference();
+        final ByteSource binary = contentService.getBinary( storedContent.getId(), binaryReference );
+        assertNotNull( binary );
+
+        try (InputStream stream = binary.openStream())
+        {
+            final byte[] bytes = ByteStreams.toByteArray( stream );
+            assertEquals( updatedText, new String( bytes ) );
+        }
+        catch ( IOException e )
+        {
+            throw e;
+        }
+
+
+    }
 }

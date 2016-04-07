@@ -82,16 +82,16 @@
 
         var appTiles = container.querySelector('.launcher-app-container').querySelectorAll("a");
         for (var i = 0; i < appTiles.length; i++) {
-            appTiles[i].addEventListener("click", function(e) {
+            appTiles[i].addEventListener("click", function (e) {
                 if (longpress) {
                     e.preventDefault();
                     document.location.href = this.href;
                 }
             });
-            appTiles[i].addEventListener("mousedown", function() {
+            appTiles[i].addEventListener("mousedown", function () {
                 startTime = new Date().getTime();
             });
-            appTiles[i].addEventListener("mouseup", function() {
+            appTiles[i].addEventListener("mouseup", function () {
                 endTime = new Date().getTime();
                 longpress = (endTime - startTime < 500) ? false : true;
             });

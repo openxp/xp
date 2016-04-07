@@ -76,10 +76,11 @@ module app.view {
 
         private loadData(): wemQ.Promise<ContentVersion[]> {
             if (this.contentId) {
-                return new api.content.GetContentVersionsForViewRequest(this.contentId).sendAndParse().then((contentVersions: api.content.ContentVersions) => {
-                    this.activeVersion = contentVersions.getActiveVersion();
-                    return contentVersions.getContentVersions();
-                });
+                return new api.content.GetContentVersionsForViewRequest(this.contentId).sendAndParse().then(
+                    (contentVersions: api.content.ContentVersions) => {
+                        this.activeVersion = contentVersions.getActiveVersion();
+                        return contentVersions.getContentVersions();
+                    });
             } else {
                 throw new Error("Required contentId not set for ActiveContentVersionsTreeGrid")
             }
@@ -149,13 +150,13 @@ module app.view {
             var restoreButton = new api.ui.button.ActionButton(new api.ui.Action(isActive
                 ? "This version is active"
                 : "Restore this version").onExecuted((action: api.ui.Action) => {
-                    if(!isActive) {
-                        new api.content.SetActiveContentVersionRequest(item.id, this.contentId).sendAndParse().then((contentId: ContentId) => {
-                            api.notify.NotifyManager.get().showFeedback(`Version successfully changed to ${item.id}`);
-                            new api.content.event.ActiveContentVersionSetEvent(this.contentId, item.id).fire();
-                        });
-                    }
-                }), false);
+                if (!isActive) {
+                    new api.content.SetActiveContentVersionRequest(item.id, this.contentId).sendAndParse().then((contentId: ContentId) => {
+                        api.notify.NotifyManager.get().showFeedback(`Version successfully changed to ${item.id}`);
+                        new api.content.event.ActiveContentVersionSetEvent(this.contentId, item.id).fire();
+                    });
+                }
+            }), false);
 
             if (isActive) {
                 restoreButton.addClass("active");

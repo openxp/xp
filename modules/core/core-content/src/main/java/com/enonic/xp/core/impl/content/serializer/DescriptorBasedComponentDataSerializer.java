@@ -1,14 +1,14 @@
-package com.enonic.xp.core.impl.content.page.region;
+package com.enonic.xp.core.impl.content.serializer;
 
 
 import com.enonic.xp.data.PropertySet;
 import com.enonic.xp.page.DescriptorKey;
 import com.enonic.xp.region.DescriptorBasedComponent;
 
-public abstract class DescriptorBasedComponentDataSerializer<TO_DATA_INPUT extends DescriptorBasedComponent, FROM_DATA_OUTPUT extends DescriptorBasedComponent>
+abstract class DescriptorBasedComponentDataSerializer<TO_DATA_INPUT extends DescriptorBasedComponent, FROM_DATA_OUTPUT extends DescriptorBasedComponent>
     extends ComponentDataSerializer<TO_DATA_INPUT, FROM_DATA_OUTPUT>
 {
-    protected void applyComponentToData( final DescriptorBasedComponent component, final PropertySet asData )
+    void applyComponentToData( final DescriptorBasedComponent component, final PropertySet asData )
     {
         super.applyComponentToData( component, asData );
         asData.ifNotNull().setString( "template", component.getDescriptor() != null ? component.getDescriptor().toString() : null );
@@ -18,7 +18,7 @@ public abstract class DescriptorBasedComponentDataSerializer<TO_DATA_INPUT exten
         }
     }
 
-    protected void applyComponentFromData( final DescriptorBasedComponent.Builder component, final PropertySet asData )
+    void applyComponentFromData( final DescriptorBasedComponent.Builder component, final PropertySet asData )
     {
         super.applyComponentFromData( component, asData );
         if ( asData.hasProperty( "template" ) )

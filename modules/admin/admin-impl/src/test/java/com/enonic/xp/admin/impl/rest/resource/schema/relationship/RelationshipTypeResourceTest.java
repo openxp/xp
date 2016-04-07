@@ -1,5 +1,18 @@
 package com.enonic.xp.admin.impl.rest.resource.schema.relationship;
 
+import java.awt.image.BufferedImage;
+import java.io.InputStream;
+import java.time.Instant;
+
+import javax.ws.rs.core.Response;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Resources;
+
 import com.enonic.xp.admin.impl.rest.resource.AdminResourceTestSupport;
 import com.enonic.xp.icon.Icon;
 import com.enonic.xp.jaxrs.impl.MockRestResponse;
@@ -8,18 +21,8 @@ import com.enonic.xp.schema.relationship.RelationshipType;
 import com.enonic.xp.schema.relationship.RelationshipTypeName;
 import com.enonic.xp.schema.relationship.RelationshipTypeService;
 import com.enonic.xp.schema.relationship.RelationshipTypes;
-import com.google.common.io.ByteStreams;
-import com.google.common.io.Resources;
-import org.junit.Assert;
-import org.junit.Test;
-import org.mockito.Mockito;
 
-import javax.ws.rs.core.Response;
-import java.awt.image.BufferedImage;
-import java.io.InputStream;
-import java.time.Instant;
-
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class RelationshipTypeResourceTest
     extends AdminResourceTestSupport
@@ -117,26 +120,26 @@ public class RelationshipTypeResourceTest
 
     @Test
     public void testRelationshipTypeIconSvg()
-            throws Exception
+        throws Exception
     {
         byte[] data = Resources.toByteArray( getClass().getResource( "relationshiptype.svg" ) );
         final Icon icon = Icon.from( data, "image/svg+xml", Instant.now() );
 
         RelationshipType relationshipType = RelationshipType.create().
-                name( "myapplication:like" ).
-                fromSemantic( "likes" ).
-                toSemantic( "liked by" ).
-                addAllowedFromType( ContentTypeName.from( "myapplication:person" ) ).
-                addAllowedToType( ContentTypeName.from( "myapplication:person" ) ).
-                icon( icon ).
-                build();
+            name( "myapplication:like" ).
+            fromSemantic( "likes" ).
+            toSemantic( "liked by" ).
+            addAllowedFromType( ContentTypeName.from( "myapplication:person" ) ).
+            addAllowedToType( ContentTypeName.from( "myapplication:person" ) ).
+            icon( icon ).
+            build();
         setupRelationshipType( relationshipType );
 
         final Response response = this.resource.getIcon( "myapplication:like", 20, null );
 
         assertNotNull( response.getEntity() );
         assertEquals( icon.getMimeType(), response.getMediaType().toString() );
-        org.junit.Assert.assertArrayEquals( data, ( byte[] )response.getEntity() );
+        org.junit.Assert.assertArrayEquals( data, (byte[]) response.getEntity() );
     }
 
     @Test
@@ -147,7 +150,7 @@ public class RelationshipTypeResourceTest
         final Response response = this.resource.getIcon( "myapplication:icon_svg_test", 20, null );
 
         assertNotNull( response.getEntity() );
-        org.junit.Assert.assertArrayEquals( ByteStreams.toByteArray( in ), ( byte[] )response.getEntity() );
+        org.junit.Assert.assertArrayEquals( ByteStreams.toByteArray( in ), (byte[]) response.getEntity() );
     }
 
 

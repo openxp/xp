@@ -16,7 +16,7 @@ module api.util.htmlarea.dialog {
 
         public static CLASS_NAME = "html-area-modal-dialog";
 
-        constructor(editor:HtmlAreaEditor, title:api.ui.dialog.ModalDialogHeader, cls?:string) {
+        constructor(editor: HtmlAreaEditor, title: api.ui.dialog.ModalDialogHeader, cls?: string) {
             super({
                 title: title
             });
@@ -29,7 +29,7 @@ module api.util.htmlarea.dialog {
             this.initializeActions();
         }
 
-        setSubmitAction(action:api.ui.Action) {
+        setSubmitAction(action: api.ui.Action) {
             this.submitAction = action;
         }
 
@@ -41,7 +41,7 @@ module api.util.htmlarea.dialog {
             this.validated = true;
         }
 
-        protected setFirstFocusField(field:api.dom.Element) {
+        protected setFirstFocusField(field: api.dom.Element) {
             this.firstFocusField = field;
         }
 
@@ -53,15 +53,15 @@ module api.util.htmlarea.dialog {
             this.appendChildToContentPanel(<api.dom.Element>this.createMainForm());
         }
 
-        protected getMainFormItems():FormItem[] {
+        protected getMainFormItems(): FormItem[] {
             return [];
         }
 
-        protected createMainForm():Form {
+        protected createMainForm(): Form {
             return this.mainForm = this.createForm(this.getMainFormItems());
         }
 
-        protected validate():boolean {
+        protected validate(): boolean {
             this.setValidated();
 
             return this.mainForm.validate(true).isValid();
@@ -80,11 +80,11 @@ module api.util.htmlarea.dialog {
             }
         }
 
-        protected createForm(formItems:FormItem[]):Form {
+        protected createForm(formItems: FormItem[]): Form {
             var form = new Form(),
                 validationCls = "display-validation-errors";
 
-            formItems.forEach((formItem:FormItem) => {
+            formItems.forEach((formItem: FormItem) => {
                 form.add(this.createFieldSet(formItem));
                 if (formItem.getValidator() && validationCls) {
                     form.addClass(validationCls);
@@ -95,7 +95,7 @@ module api.util.htmlarea.dialog {
             return form;
         }
 
-        protected createFormPanel(formItems:FormItem[]):api.ui.panel.Panel {
+        protected createFormPanel(formItems: FormItem[]): api.ui.panel.Panel {
             var panel = new api.ui.panel.Panel(),
                 form = this.createForm(formItems);
 
@@ -104,7 +104,7 @@ module api.util.htmlarea.dialog {
             return panel;
         }
 
-        private createFieldSet(formItem:FormItem):Fieldset {
+        private createFieldSet(formItem: FormItem): Fieldset {
             var fieldSet = new Fieldset();
 
             fieldSet.addClass("modal-dialog-fieldset");
@@ -114,7 +114,7 @@ module api.util.htmlarea.dialog {
                 var validationRecordingViewer = new api.form.ValidationRecordingViewer();
 
                 fieldSet.appendChild(validationRecordingViewer);
-                fieldSet.onValidityChanged((event:ValidityChangedEvent) => {
+                fieldSet.onValidityChanged((event: ValidityChangedEvent) => {
                     validationRecordingViewer.setError(formItem.getError());
                 });
             }
@@ -122,14 +122,14 @@ module api.util.htmlarea.dialog {
             return fieldSet;
         }
 
-        onValidatedFieldValueChanged(formItem:FormItem) {
+        onValidatedFieldValueChanged(formItem: FormItem) {
             if (this.validated) {
                 formItem.validate(new api.ui.form.ValidationResult(), true);
             }
         }
 
-        protected createFormItem(id:string, label:string, validator?:(input:api.dom.FormInputEl) => string, value?:string,
-                                 inputEl?:api.dom.FormItemEl):FormItem {
+        protected createFormItem(id: string, label: string, validator?: (input: api.dom.FormInputEl) => string, value?: string,
+                                 inputEl?: api.dom.FormItemEl): FormItem {
             var formItemEl = inputEl || new api.ui.text.TextInput(),
                 formItemBuilder = new FormItemBuilder(formItemEl).setLabel(label),
                 inputWrapper = new api.dom.DivEl("input-wrapper"),
@@ -172,7 +172,7 @@ module api.util.htmlarea.dialog {
             this.addCancelButtonToBottom();
         }
 
-        protected getFieldById(id:string):api.dom.FormItemEl {
+        protected getFieldById(id: string): api.dom.FormItemEl {
             return this.fields[id];
         }
 

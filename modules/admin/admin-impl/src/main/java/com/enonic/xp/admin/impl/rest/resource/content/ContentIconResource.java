@@ -28,11 +28,11 @@ import com.enonic.xp.content.Media;
 import com.enonic.xp.icon.Thumbnail;
 import com.enonic.xp.image.ImageService;
 import com.enonic.xp.image.ReadImageParams;
+import com.enonic.xp.jaxrs.JaxRsComponent;
 import com.enonic.xp.media.ImageOrientation;
 import com.enonic.xp.media.MediaInfoService;
 import com.enonic.xp.security.RoleKeys;
 import com.enonic.xp.util.Exceptions;
-import com.enonic.xp.jaxrs.JaxRsComponent;
 
 
 @Path(ResourceConstants.REST_ROOT + "content/icon")
@@ -105,7 +105,7 @@ public final class ContentIconResource
                 {
                     final boolean isSVG = contentThumbnail.getMimeType().equals( "image/svg+xml" );
 
-                    if( isSVG )
+                    if ( isSVG )
                     {
                         return new ResolvedImage( binary.read(), contentThumbnail.getMimeType() );
                     }
@@ -115,13 +115,13 @@ public final class ContentIconResource
                         final String format = imageService.getFormatByMimeType( contentThumbnail.getMimeType() );
 
                         final ReadImageParams readImageParams = ReadImageParams.newImageParams().
-                                contentId( content.getId() ).
-                                binaryReference( contentThumbnail.getBinaryReference() ).
-                                scaleSize( size ).
-                                scaleSquare( crop ).
-                                format( format ).
-                                orientation( imageOrientation ).
-                                build();
+                            contentId( content.getId() ).
+                            binaryReference( contentThumbnail.getBinaryReference() ).
+                            scaleSize( size ).
+                            scaleSquare( crop ).
+                            format( format ).
+                            orientation( imageOrientation ).
+                            build();
 
                         final ByteSource thumbnailImage = imageService.readImage( readImageParams );
                         return new ResolvedImage( thumbnailImage.read(), contentThumbnail.getMimeType() );
@@ -146,7 +146,7 @@ public final class ContentIconResource
             {
                 final boolean isSVG = imageAttachment.getMimeType().equals( "image/svg+xml" );
 
-                if( isSVG )
+                if ( isSVG )
                 {
                     final ByteSource binary = contentService.getBinary( media.getId(), imageAttachment.getBinaryReference() );
                     return new ResolvedImage( binary.read(), imageAttachment.getMimeType() );
@@ -156,14 +156,14 @@ public final class ContentIconResource
                     final String format = imageService.getFormatByMimeType( imageAttachment.getMimeType() );
 
                     final ReadImageParams readImageParams = ReadImageParams.newImageParams().
-                            contentId( media.getId() ).
-                            binaryReference( imageAttachment.getBinaryReference() ).
-                            cropping( media.getCropping() ).
-                            scaleSize( size ).
-                            scaleSquare( crop ).
-                            format( format ).
-                            orientation( getSourceAttachmentOrientation( media ) ).
-                            build();
+                        contentId( media.getId() ).
+                        binaryReference( imageAttachment.getBinaryReference() ).
+                        cropping( media.getCropping() ).
+                        scaleSize( size ).
+                        scaleSquare( crop ).
+                        format( format ).
+                        orientation( getSourceAttachmentOrientation( media ) ).
+                        build();
 
                     final ByteSource contentImage = imageService.readImage( readImageParams );
                     return new ResolvedImage( contentImage.read(), imageAttachment.getMimeType() );

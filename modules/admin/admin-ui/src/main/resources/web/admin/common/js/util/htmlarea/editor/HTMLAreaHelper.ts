@@ -8,18 +8,15 @@ module api.util.htmlarea.editor {
 
     export class HTMLAreaHelper {
 
-        private static getConvertedImageSrc(imgSrc:string):string {
+        private static getConvertedImageSrc(imgSrc: string): string {
             var contentId = imgSrc.replace(ImageModalDialog.imagePrefix, api.util.StringHelper.EMPTY_STRING),
-                imageUrl = new api.content.ContentImageUrlResolver().
-                    setContentId(new api.content.ContentId(contentId)).
-                    setScaleWidth(true).
-                    setSize(ImageModalDialog.maxImageWidth).
-                    resolve();
+                imageUrl = new api.content.ContentImageUrlResolver().setContentId(new api.content.ContentId(contentId)).setScaleWidth(
+                    true).setSize(ImageModalDialog.maxImageWidth).resolve();
 
             return "src=\"" + imageUrl + "\" data-src=\"" + imgSrc + "\"";
         }
 
-        public static prepareImgSrcsInValueForEdit(value:string):string {
+        public static prepareImgSrcsInValueForEdit(value: string): string {
             var processedContent = value,
                 regex = /<img.*?src="(.*?)"/g,
                 imgSrcs;
@@ -31,7 +28,7 @@ module api.util.htmlarea.editor {
             while (processedContent.search(" src=\"" + ImageModalDialog.imagePrefix) > -1) {
                 imgSrcs = regex.exec(processedContent);
                 if (imgSrcs) {
-                    imgSrcs.forEach((imgSrc:string) => {
+                    imgSrcs.forEach((imgSrc: string) => {
                         if (imgSrc.indexOf(ImageModalDialog.imagePrefix) === 0) {
                             processedContent =
                                 processedContent.replace(" src=\"" + imgSrc + "\"", HTMLAreaHelper.getConvertedImageSrc(imgSrc));
@@ -42,7 +39,7 @@ module api.util.htmlarea.editor {
             return processedContent;
         }
 
-        public static prepareEditorImageSrcsBeforeSave(editor:HtmlAreaEditor):string {
+        public static prepareEditorImageSrcsBeforeSave(editor: HtmlAreaEditor): string {
             var content = editor.getContent(),
                 processedContent = editor.getContent(),
                 regex = /<img.*?data-src="(.*?)".*?>/g,
@@ -90,17 +87,17 @@ module api.util.htmlarea.editor {
             }
 
             var styleFormat = "float: {0}; margin: {1};" +
-                (HTMLAreaHelper.isImageInOriginalSize(image) ? "" : "width: {2}%;");
+                              (HTMLAreaHelper.isImageInOriginalSize(image) ? "" : "width: {2}%;");
             var styleAttr = "text-align: " + alignment + ";";
 
             switch (alignment) {
-                case 'left':
-                case 'right':
-                    styleAttr = api.util.StringHelper.format(styleFormat, alignment, "15px", "40");
-                    break;
-                case 'center':
-                    styleAttr = styleAttr + api.util.StringHelper.format(styleFormat, "none", "auto", "60");
-                    break;
+            case 'left':
+            case 'right':
+                styleAttr = api.util.StringHelper.format(styleFormat, alignment, "15px", "40");
+                break;
+            case 'center':
+                styleAttr = styleAttr + api.util.StringHelper.format(styleFormat, "none", "auto", "60");
+                break;
             }
 
             image.parentElement.setAttribute("style", styleAttr);
