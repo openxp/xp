@@ -1,13 +1,17 @@
 package com.enonic.xp.lib.http;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.google.common.io.ByteSource;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
@@ -31,6 +35,8 @@ public final class HttpRequestHandler
     private String bodyString;
 
     private ByteSource bodyStream;
+
+    private List<Map<String, Object>> bodyMultipart;
 
     private String contentType;
 
@@ -81,6 +87,11 @@ public final class HttpRequestHandler
     public void setBody( final ByteSource value )
     {
         this.bodyStream = value;
+    }
+
+    public void setBody( final List<Map<String, Object>> value )
+    {
+        this.bodyMultipart = value;
     }
 
     public void setContentType( final String contentType )
@@ -146,22 +157,7 @@ public final class HttpRequestHandler
         RequestBody requestBody = null;
         if ( HttpMethod.permitsRequestBody( this.method ) )
         {
-            if ( this.params != null && !this.params.isEmpty() )
-            {
-                final FormEncodingBuilder formBody = new FormEncodingBuilder();
-                addParams( formBody, this.params );
-                requestBody = formBody.build();
-            }
-            else if ( this.bodyString != null && !this.bodyString.isEmpty() )
-            {
-                final MediaType mediaType = this.contentType != null ? MediaType.parse( this.contentType ) : null;
-                requestBody = RequestBody.create( mediaType, this.bodyString );
-            }
-            else if ( this.bodyStream != null )
-            {
-                final MediaType mediaType = this.contentType != null ? MediaType.parse( this.contentType ) : null;
-                requestBody = new StreamRequestBody( mediaType, this.bodyStream );
-            }
+            requestBody = getRequestBody();
 
             if ( requestBody == null && HttpMethod.requiresRequestBody( this.method ) )
             {
@@ -172,6 +168,68 @@ public final class HttpRequestHandler
 
         request.method( this.method, requestBody );
     }
+
+    private RequestBody getRequestBody()
+    {
+        if ( this.params != null && !this.params.isEmpty() )
+        {
+            final FormEncodingBuilder formBody = new FormEncodingBuilder();
+            addParams( formBody, this.params );
+            return formBody.build();
+        }
+        if ( this.bodyString != null && !this.bodyString.isEmpty() )
+        {
+            final MediaType mediaType = this.contentType != null ? MediaType.parse( this.contentType ) : null;
+            return RequestBody.create( mediaType, this.bodyString );
+        }
+        if ( this.bodyStream != null )
+        {
+            final MediaType mediaType = this.contentType != null ? MediaType.parse( this.contentType ) : null;
+            return new StreamRequestBody( mediaType, this.bodyStream );
+        }
+        if ( this.bodyMultipart != null )
+        {
+            return getMultipartRequestBody();
+        }
+        return null;
+    }
+
+    private RequestBody getMultipartRequestBody()
+    {
+        final MultipartBuilder multipartBuilder = new MultipartBuilder().type( MultipartBuilder.FORM );
+
+        for ( Map<String, Object> multipartItem : this.bodyMultipart )
+        {
+            final String name = getValue( multipartItem, "name" );
+            final String fileName = getValue( multipartItem, "fileName" );
+            final String contentType = getValue( multipartItem, "contentType" );
+            final Object value = multipartItem.get( "value" );
+
+            if ( !StringUtils.isBlank( name ) && value != null )
+            {
+                if ( value instanceof ByteSource )
+                {
+                    final ByteSource stream = (ByteSource) value;
+                    final String ct = contentType == null ? "application/octet-stream" : contentType;
+                    final MediaType mediaType = MediaType.parse( ct );
+                    final StreamRequestBody streamRequestBody = new StreamRequestBody( mediaType, stream );
+                    multipartBuilder.addFormDataPart( name, fileName, streamRequestBody );
+                }
+                else
+                {
+                    multipartBuilder.addFormDataPart( name, value.toString() );
+                }
+            }
+        }
+        return multipartBuilder.build();
+    }
+
+    private String getValue( final Map<String, Object> object, final String key )
+    {
+        final Object value = object.get( key );
+        return value == null ? null : value.toString();
+    }
+
 
     private HttpUrl addParams( final HttpUrl url, final Map<String, Object> params )
     {
