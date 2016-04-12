@@ -57,3 +57,12 @@ exports.handle403 = function (req) {
         body: body
     };
 };
+
+exports.logout = function (req) {
+    authLib.logout();
+    if (req.params.redirect) {
+        return {
+            redirect: req.params.redirect
+        }
+    }
+};
