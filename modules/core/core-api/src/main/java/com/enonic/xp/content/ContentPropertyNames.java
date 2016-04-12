@@ -61,6 +61,8 @@ public class ContentPropertyNames
 
     public static final String ATTACHMENT_SIZE = "size";
 
+    public static final String ATTACHMENT_TEXT = "text";
+
     public static final String OWNER = "owner";
 
     public static final String LANGUAGE = "language";

@@ -15,8 +15,6 @@ public final class MediaInfo
 
     private final ImmutableMultimap<String, String> metadata;
 
-    private final ExtractedTextInfo extractedTextInfo;
-
     public static final String CAMERA_INFO = "cameraInfo";
 
     public static final String GPS_INFO = "gpsInfo";
@@ -41,18 +39,12 @@ public final class MediaInfo
     {
         this.mediaType = builder.mediaType;
         this.metadata = builder.metadata.build();
-        this.extractedTextInfo = builder.extractedTextInfo;
         Preconditions.checkNotNull( this.metadata, "metadata cannot be null" );
     }
 
     public String getMediaType()
     {
         return mediaType;
-    }
-
-    public ExtractedTextInfo getExtractedTextInfo()
-    {
-        return extractedTextInfo;
     }
 
     public ImmutableMultimap<String, String> getMetadata()
@@ -71,8 +63,6 @@ public final class MediaInfo
 
         private final ImmutableMultimap.Builder<String, String> metadata = ImmutableMultimap.builder();
 
-        private ExtractedTextInfo extractedTextInfo;
-
         public Builder mediaType( final String value )
         {
             this.mediaType = value;
@@ -82,13 +72,6 @@ public final class MediaInfo
         public Builder addMetadata( final String name, final String value )
         {
             this.metadata.put( FormItemName.safeName( name ), value );
-            return this;
-        }
-
-
-        public Builder setExtratedTextInfo( final ExtractedTextInfo extractedTextInfo )
-        {
-            this.extractedTextInfo = extractedTextInfo;
             return this;
         }
 

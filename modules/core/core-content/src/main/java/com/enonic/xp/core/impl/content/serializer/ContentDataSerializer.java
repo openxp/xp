@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import com.enonic.xp.app.ApplicationKey;
 import com.enonic.xp.attachment.Attachment;
 import com.enonic.xp.attachment.AttachmentNames;
+import com.enonic.xp.attachment.AttachmentSerializer;
 import com.enonic.xp.attachment.Attachments;
 import com.enonic.xp.attachment.CreateAttachment;
 import com.enonic.xp.attachment.CreateAttachments;
@@ -248,15 +249,7 @@ public final class ContentDataSerializer
 
     private void addAttachentInfoToDataset( final CreateAttachments createAttachments, final PropertySet contentAsData )
     {
-        for ( final CreateAttachment createAttachment : createAttachments )
-        {
-            final PropertySet attachmentSet = contentAsData.addSet( ATTACHMENT );
-            attachmentSet.addString( ContentPropertyNames.ATTACHMENT_NAME, createAttachment.getName() );
-            attachmentSet.addString( ContentPropertyNames.ATTACHMENT_LABEL, createAttachment.getLabel() );
-            attachmentSet.addBinaryReference( ContentPropertyNames.ATTACHMENT_BINARY_REF, createAttachment.getBinaryReference() );
-            attachmentSet.addString( ContentPropertyNames.ATTACHMENT_MIMETYPE, createAttachment.getMimeType() );
-            attachmentSet.addLong( ContentPropertyNames.ATTACHMENT_SIZE, attachmentSize( createAttachment ) );
-        }
+        AttachmentSerializer.create( contentAsData.getTree(), createAttachments );
     }
 
     private void applyAttachmentsAsData( final Attachments attachments, final PropertySet contentAsData )

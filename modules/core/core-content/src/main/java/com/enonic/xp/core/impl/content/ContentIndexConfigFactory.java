@@ -4,6 +4,7 @@ import com.enonic.xp.content.Content;
 import com.enonic.xp.content.ContentConstants;
 import com.enonic.xp.content.CreateContentTranslatorParams;
 import com.enonic.xp.data.PropertyPath;
+import com.enonic.xp.data.PropertyTree;
 import com.enonic.xp.index.IndexConfig;
 import com.enonic.xp.index.IndexConfigDocument;
 import com.enonic.xp.index.IndexValueProcessors;
@@ -27,15 +28,15 @@ class ContentIndexConfigFactory
 {
     public static IndexConfigDocument create( final CreateContentTranslatorParams params )
     {
-        return doCreateIndexConfig();
+        return doCreateIndexConfig( params.getData() );
     }
 
     public static IndexConfigDocument create( final Content content )
     {
-        return doCreateIndexConfig();
+        return doCreateIndexConfig( content.getData() );
     }
 
-    private static IndexConfigDocument doCreateIndexConfig()
+    private static IndexConfigDocument doCreateIndexConfig( final PropertyTree data )
     {
         final PatternIndexConfigDocument.Builder configDocumentBuilder = PatternIndexConfigDocument.create().
             analyzer( ContentConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
@@ -62,6 +63,7 @@ class ContentIndexConfigFactory
             includeInAllText( true ).
             addIndexValueProcessor( IndexValueProcessors.HTML_STRIPPER ).
             build();
+
         configDocumentBuilder.add( HTMLAREA_TEXT, htmlIndexConfig );
 
         return configDocumentBuilder.build();

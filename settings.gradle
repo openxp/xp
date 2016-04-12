@@ -14,6 +14,7 @@ include 'core:core-media'
 include 'core:core-app'
 include 'core:core-service'
 include 'core:core-blobstore'
+include 'core:core-extractor'
 
 include 'server:server-shell'
 include 'server:server-status'

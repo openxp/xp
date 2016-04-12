@@ -11,7 +11,6 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.google.common.io.ByteSource;
 
-import com.enonic.xp.media.ExtractedTextInfo;
 import com.enonic.xp.media.ImageOrientation;
 import com.enonic.xp.media.MediaInfo;
 import com.enonic.xp.media.MediaInfoService;
@@ -41,8 +40,6 @@ public final class MediaInfoServiceImpl
         final ParsedMediaData parsedMediaData = mediaParser.parseMetadata( byteSource );
 
         addMetadata( byteSource, builder, parsedMediaData );
-
-        builder.setExtratedTextInfo( new ExtractedTextInfo( parsedMediaData.getContent() ) );
 
         return builder.build();
     }

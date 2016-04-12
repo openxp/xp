@@ -152,6 +152,30 @@ public class FindNodesByQueryCommandTest_func_fulltext
         assertNotNull( result2.getNodes().getNodeById( node.id() ) );
     }
 
+
+    @Test
+    public void asciifolding()
+        throws Exception
+    {
+        final PropertyTree data = new PropertyTree();
+        data.addString( "myProperty", "Paçoca" );
+
+        final Node node = createNode( CreateNodeParams.create().
+            name( "my-node-1" ).
+            parent( NodePath.ROOT ).
+            data( data ).
+            indexConfigDocument( PatternIndexConfigDocument.create().
+                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
+                defaultConfig( IndexConfig.BY_TYPE ).
+                build() ).
+            build() );
+
+        refresh();
+
+        queryAndAssert( "fulltext('_allText', 'Pacoca' , 'OR')", 1 );
+        queryAndAssert( "fulltext('_allText', 'Paçoca' , 'OR')", 1 );
+    }
+
     @Test
     public void fulltext_with_path()
         throws Exception
