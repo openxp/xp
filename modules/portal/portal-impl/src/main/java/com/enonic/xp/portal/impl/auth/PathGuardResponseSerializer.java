@@ -63,7 +63,7 @@ public class PathGuardResponseSerializer
             portalRequest.setUserStore( userStore );
 
             final AuthControllerScript authControllerScript = authControllerScriptFactory.fromScript( authDescriptor.getResourceKey() );
-            final PortalResponse portalResponse = authControllerScript.execute( "handle403", portalRequest );
+            final PortalResponse portalResponse = authControllerScript.execute( "login", portalRequest );
 
             final ResponseSerializer serializer = new ResponseSerializer( portalRequest, portalResponse );
             serializer.serialize( response );

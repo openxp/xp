@@ -2,7 +2,7 @@ var mustacheLib = require('/lib/xp/mustache');
 var portalLib = require('/lib/xp/portal');
 var authLib = require('/lib/xp/auth');
 
-exports.handle403 = function (req) {
+exports.login = function (req) {
     var userStore = authLib.getUserStore();
 
     var jQueryUrl = portalLib.assetUrl({path: "js/jquery-2.2.0.min.js"});
