@@ -98,7 +98,7 @@ public final class FormItems
         }
         else
         {
-            return foundFormItem;
+            return null;
         }
     }
 

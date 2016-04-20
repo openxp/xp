@@ -64,6 +64,50 @@ final class BuiltinContentTypes
             build() ).
         build();
 
+    //    private static final FormItemSet FOCAL_POINT_TEST = FormItemSet.create().
+//        name( "focalPoint" ).
+//        label( "Forcal Point" ).
+//        addFormItem( Input.create().name( "x" ).inputType( InputTypeName.DOUBLE ).label( "X" ).occurrences( 1, 1 ).build() ).
+//        addFormItem( Input.create().name( "y" ).inputType( InputTypeName.DOUBLE ).label( "X" ).occurrences( 1, 1 ).build() ).
+//        build();
+//
+//    private static final FormItemSet MEDIA_TEST = FormItemSet.create().
+//        name( ContentPropertyNames.MEDIA ).
+//        label( "Image" ).
+//        addFormItem( Input.create().
+//            name( "attachment" ).
+//            inputType( InputTypeName.TEXT_AREA ).
+//            label( "Attachment" ).
+//            occurrences( 1, 1 ).
+//            build() ).
+//        addFormItem( FOCAL_POINT_TEST ).
+//        build();
+//
+//
+//    private static final Form MEDIA_IMAGE_FORM = Form.create().
+//        addFormItem( MEDIA_TEST ).
+//        addFormItem( Input.create().name( "caption" ).
+//            inputType( InputTypeName.TEXT_AREA ).
+//            label( "Caption" ).
+//            occurrences( 0, 1 ).
+//            build() ).
+//        addFormItem( Input.create().name( "artist" ).
+//            inputType( InputTypeName.TAG ).
+//            label( "Artist" ).
+//            occurrences( 0, 0 ).
+//            build() ).
+//        addFormItem( Input.create().name( "copyright" ).
+//            inputType( InputTypeName.TEXT_LINE ).
+//            label( "Copyright" ).
+//            occurrences( 0, 1 ).
+//            build() ).
+//        addFormItem( Input.create().name( "tags" ).
+//            inputType( InputTypeName.TAG ).
+//            label( "Tags" ).
+//            occurrences( 0, 0 ).
+//            build() ).
+//        build();
+
     private static final Form MEDIA_IMAGE_FORM = Form.create().
         addFormItem( Input.create().name( ContentPropertyNames.MEDIA ).
             label( "Image" ).

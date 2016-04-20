@@ -89,11 +89,11 @@ public final class JsonToPropertyTreeTranslator
 
         if ( input == null )
         {
-            if ( this.strictMode )
-            {
-                throw new IllegalArgumentException(
-                    "No mapping defined for property " + key + " with value " + resolveStringValue( value ) );
-            }
+//            if ( this.strictMode )
+//            {
+//                throw new IllegalArgumentException(
+//                    "No mapping defined for property " + key + " with value " + resolveStringValue( value ) );
+//            }
 
             parent.addProperty( key, resolveCoreValue( value ) );
         }
