@@ -355,7 +355,7 @@ final class CreateContentCommand
                     {
                         LOG.warn(
                             "Invalid default value for [" + input.getInputType() + "] input type with name '" + input.getName() + "' : " +
-                                ex.toString() );
+                                ex.toString(), ex );
                     }
                 }
             }

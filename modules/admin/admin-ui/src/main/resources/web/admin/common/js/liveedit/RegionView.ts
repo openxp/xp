@@ -102,11 +102,11 @@ module api.liveedit {
 
             super(new ItemViewBuilder().
                 setItemViewIdProducer(builder.parentView.getItemViewIdProducer()).
-                setType(RegionItemType.get()).setElement(builder.element).setPlaceholder(
-                new RegionPlaceholder(builder.region)).setTooltipViewer(
-                new RegionComponentViewer()).setParentElement(
-                builder.parentElement).setParentView(
-                builder.parentView).setContextMenuActions(
+                setType(RegionItemType.get()).
+                setElement(builder.element).
+                setPlaceholder(new RegionPlaceholder(builder.region)).
+                setViewer(new RegionComponentViewer()).
+                setParentElement(builder.parentElement).setParentView(builder.parentView).setContextMenuActions(
                 this.createRegionContextMenuActions(builder.parentView.getLiveEditModel())).
                 setContextMenuTitle(new RegionViewContextMenuTitle(builder.region)));
 
@@ -188,7 +188,6 @@ module api.liveedit {
                     this.region.unComponentRemoved(this.componentRemovedListener);
                 }
                 this.region = region;
-                this.setTooltipObject(region);
 
                 this.region.onComponentAdded(this.componentAddedListener);
                 this.region.onComponentRemoved(this.componentRemovedListener);
