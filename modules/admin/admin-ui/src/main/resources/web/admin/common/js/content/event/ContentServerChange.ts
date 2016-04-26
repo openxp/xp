@@ -75,9 +75,8 @@ module api.content.event {
         static fromJson(nodeEventJson: NodeEventJson): ContentServerChange {
             var contentEventType;
 
-            var changeItems = nodeEventJson.data.nodes.
-                filter((node) => node.path.indexOf("/content") === 0).
-                map((node: NodeEventNodeJson) => ContentServerChangeItem.fromJson(node));
+            var changeItems = nodeEventJson.data.nodes.filter((node) => node.path.indexOf("/content") === 0).map(
+                (node: NodeEventNodeJson) => ContentServerChangeItem.fromJson(node));
 
             if (changeItems.length === 0) {
                 return null;

@@ -1,6 +1,6 @@
 module api.content.query {
 
-    export class ContentQuery{
+    export class ContentQuery {
 
         static POSTLOAD_SIZE = 10;
 

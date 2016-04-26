@@ -11,9 +11,8 @@ module app.wizard.page.contextwindow.inspect.region {
         constructor() {
             super();
 
-            this.namesAndIcon = new api.app.NamesAndIconView(new api.app.NamesAndIconViewBuilder().
-                setSize(api.app.NamesAndIconViewSize.medium)).
-                setIconClass(api.liveedit.ItemViewIconClassResolver.resolveByType("text"));
+            this.namesAndIcon = new api.app.NamesAndIconView(new api.app.NamesAndIconViewBuilder().setSize(
+                api.app.NamesAndIconViewSize.medium)).setIconClass(api.liveedit.ItemViewIconClassResolver.resolveByType("text"));
 
             this.appendChild(this.namesAndIcon);
         }
@@ -24,7 +23,7 @@ module app.wizard.page.contextwindow.inspect.region {
 
             if (textComponent) {
                 let viewer = <TextComponentViewer>textComponentView.getViewer();
-                this.namesAndIcon.setMainName(viewer.resolveDisplayName(textComponent, textComponentView) );
+                this.namesAndIcon.setMainName(viewer.resolveDisplayName(textComponent, textComponentView));
                 this.namesAndIcon.setSubName(viewer.resolveSubName(textComponent));
                 this.namesAndIcon.setIconClass(viewer.resolveIconClass(textComponent));
             }

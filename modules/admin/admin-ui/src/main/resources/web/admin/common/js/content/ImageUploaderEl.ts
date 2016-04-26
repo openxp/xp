@@ -165,11 +165,8 @@ module api.content {
         }
 
         private resolveImageUrl(value: string): string {
-            return new ContentImageUrlResolver().
-                setContentId(new api.content.ContentId(value)).
-                setTimestamp(new Date()).
-                setSource(true).
-                resolve();
+            return new ContentImageUrlResolver().setContentId(new api.content.ContentId(value)).setTimestamp(new Date()).setSource(
+                true).resolve();
         }
 
         private subscribeImageEditorOnEvents(imageEditor: ImageEditor, contentId: api.content.ContentId) {
@@ -233,8 +230,7 @@ module api.content {
         private positionImageEditor(imageEditor: ImageEditor) {
             var resultOffset = this.getResultContainer().getEl().getOffset();
 
-            imageEditor.getEl().setTopPx(resultOffset.top).
-                setLeftPx(resultOffset.left);
+            imageEditor.getEl().setTopPx(resultOffset.top).setLeftPx(resultOffset.left);
         }
 
         protected getExistingItem(value: string): api.dom.Element {

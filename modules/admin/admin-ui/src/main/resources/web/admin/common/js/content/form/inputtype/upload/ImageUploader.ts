@@ -112,9 +112,8 @@ module api.content.form.inputtype.upload {
         updateProperty(property: api.data.Property, unchangedOnly?: boolean): Q.Promise<void> {
             if ((!unchangedOnly || !this.imageUploader.isDirty()) && this.getContext().contentId) {
 
-                return new api.content.GetContentByIdRequest(this.getContext().contentId).
-                    sendAndParse().
-                    then((content: api.content.Content) => {
+                return new api.content.GetContentByIdRequest(this.getContext().contentId).sendAndParse().then(
+                    (content: api.content.Content) => {
 
                         this.imageUploader.setOriginalDimensions(content);
                         this.imageUploader.setValue(content.getId(), false, true);
@@ -122,8 +121,8 @@ module api.content.form.inputtype.upload {
                         this.configEditorsProperties(content);
 
                     }).catch((reason: any) => {
-                        api.DefaultErrorHandler.handle(reason);
-                    });
+                    api.DefaultErrorHandler.handle(reason);
+                });
             }
             return wemQ<void>(null);
         }

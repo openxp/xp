@@ -39,8 +39,7 @@ module api.liveedit.layout {
             this.itemViewAddedListener = (event: ItemViewAddedEvent) => this.notifyItemViewAdded(event.getView(), event.isNew());
             this.itemViewRemovedListener = (event: ItemViewRemovedEvent) => this.notifyItemViewRemoved(event.getView());
 
-            super(builder.
-                setViewer(new LayoutComponentViewer()).
+            super(builder.setViewer(new LayoutComponentViewer()).
                 setPlaceholder(new LayoutPlaceholder(this)).
                 setInspectActionRequired(true));
 

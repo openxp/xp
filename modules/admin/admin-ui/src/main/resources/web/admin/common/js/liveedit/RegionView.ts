@@ -100,13 +100,11 @@ module api.liveedit {
                 this.notifyItemViewRemoved(event.getView());
             };
 
-            super(new ItemViewBuilder().
-                setItemViewIdProducer(builder.parentView.getItemViewIdProducer()).
-                setType(RegionItemType.get()).
-                setElement(builder.element).
-                setPlaceholder(new RegionPlaceholder(builder.region)).
-                setViewer(new RegionComponentViewer()).
-                setParentElement(builder.parentElement).setParentView(builder.parentView).setContextMenuActions(
+            super(new ItemViewBuilder().setItemViewIdProducer(builder.parentView.getItemViewIdProducer()).setType(
+                RegionItemType.get()).setElement(
+                builder.element).setPlaceholder(new RegionPlaceholder(builder.region)).setViewer(
+                new RegionComponentViewer()).setParentElement(builder.parentElement).setParentView(
+                builder.parentView).setContextMenuActions(
                 this.createRegionContextMenuActions(builder.parentView.getLiveEditModel())).
                 setContextMenuTitle(new RegionViewContextMenuTitle(builder.region)));
 

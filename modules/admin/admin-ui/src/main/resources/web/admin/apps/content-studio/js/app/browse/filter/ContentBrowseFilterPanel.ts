@@ -117,24 +117,23 @@ module app.browse.filter {
             new ContentQueryRequest<ContentSummaryJson,ContentSummary>(contentQuery).
                 setExpand(api.rest.Expand.SUMMARY).
                 sendAndParse().then((contentQueryResult: ContentQueryResult<ContentSummary,ContentSummaryJson>) => {
-                    this.handleDataSearchResult(contentQuery, contentQueryResult);
+                this.handleDataSearchResult(contentQuery, contentQueryResult);
                 }).catch((reason: any) => {
                     api.DefaultErrorHandler.handle(reason);
                 }).done();
         }
 
         private refreshDataAndHandleResponse(contentQuery: ContentQuery) {
-            new ContentQueryRequest<ContentSummaryJson,ContentSummary>(contentQuery).
-            setExpand(api.rest.Expand.SUMMARY).
-            sendAndParse().then((contentQueryResult: ContentQueryResult<ContentSummary,ContentSummaryJson>) => {
-                if(contentQueryResult.getMetadata().getTotalHits() > 0) {
-                    this.handleDataSearchResult(contentQuery, contentQueryResult);
-                }
-                else {
-                    this.handleNoSearchResultOnRefresh(contentQuery);
-                }
+            new ContentQueryRequest<ContentSummaryJson,ContentSummary>(contentQuery).setExpand(api.rest.Expand.SUMMARY).sendAndParse().then(
+                (contentQueryResult: ContentQueryResult<ContentSummary,ContentSummaryJson>) => {
+                    if (contentQueryResult.getMetadata().getTotalHits() > 0) {
+                        this.handleDataSearchResult(contentQuery, contentQueryResult);
+                    }
+                    else {
+                        this.handleNoSearchResultOnRefresh(contentQuery);
+                    }
 
-            }).catch((reason: any) => {
+                }).catch((reason: any) => {
                 api.DefaultErrorHandler.handle(reason);
             }).done();
         }
@@ -150,10 +149,10 @@ module app.browse.filter {
         }
 
         private handleNoSearchResultOnRefresh(contentQuery: ContentQuery) {
-            if(contentQuery.getContentTypes().length > 0 ) { //remove content type facet from search
+            if (contentQuery.getContentTypes().length > 0) { //remove content type facet from search
                 this.refreshDataAndHandleResponse(this.cloneContentQueryNoContentTypes(contentQuery));
             }
-            else if(this.hasSearchStringSet()) { // if still no result and search text is set remove last modified facet
+            else if (this.hasSearchStringSet()) { // if still no result and search text is set remove last modified facet
                 this.deselectAll();
                 this.searchDataAndHandleResponse(this.cloneContentQueryNoAggregations(contentQuery));
             }
@@ -163,13 +162,9 @@ module app.browse.filter {
         }
 
         private cloneContentQueryNoContentTypes(contentQuery: ContentQuery): ContentQuery {
-            var newContentQuery: ContentQuery = new ContentQuery().
-                setContentTypeNames([]).
-                setFrom(contentQuery.getFrom()).
-                setQueryExpr(contentQuery.getQueryExpr()).
-                setSize(contentQuery.getSize()).
-                setAggregationQueries(contentQuery.getAggregationQueries()).
-                setQueryFilters(contentQuery.getQueryFilters());
+            var newContentQuery: ContentQuery = new ContentQuery().setContentTypeNames([]).setFrom(contentQuery.getFrom()).setQueryExpr(
+                contentQuery.getQueryExpr()).setSize(contentQuery.getSize()).setAggregationQueries(
+                contentQuery.getAggregationQueries()).setQueryFilters(contentQuery.getQueryFilters());
 
             return newContentQuery;
         }

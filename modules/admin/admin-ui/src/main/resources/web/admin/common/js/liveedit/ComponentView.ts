@@ -121,9 +121,7 @@ module api.liveedit {
             super(new ItemViewBuilder().
                     setItemViewIdProducer(builder.itemViewProducer
                         ? builder.itemViewProducer
-                        : builder.parentRegionView.getItemViewIdProducer()).
-                    setPlaceholder(builder.placeholder).
-                    setViewer(builder.viewer).
+                        : builder.parentRegionView.getItemViewIdProducer()).setPlaceholder(builder.placeholder).setViewer(builder.viewer).
                     setType(builder.type).
                     setElement(builder.element).
                     setParentView(builder.parentRegionView).

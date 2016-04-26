@@ -184,9 +184,8 @@ module api.liveedit {
 
             super(new ItemViewBuilder().
                 setLiveEditModel(builder.liveEditModel).
-                setItemViewIdProducer(builder.itemViewProducer).
-                setPlaceholder(new PagePlaceholder(this)).
-                setViewer(new api.content.ContentSummaryViewer()).
+                setItemViewIdProducer(builder.itemViewProducer).setPlaceholder(new PagePlaceholder(this)).setViewer(
+                new api.content.ContentSummaryViewer()).
                 setType(PageItemType.get()).
                 setElement(builder.element).
                 setContextMenuActions(this.unlockedScreenActions).

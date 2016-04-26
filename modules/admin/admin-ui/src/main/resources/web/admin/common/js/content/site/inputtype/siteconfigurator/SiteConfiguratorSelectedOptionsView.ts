@@ -53,8 +53,8 @@ module api.content.site.inputtype.siteconfigurator {
         }
 
         removeOption(optionToRemove: api.ui.selector.Option<Application>, silent: boolean = false) {
-            this.items = this.items.filter(item => !item.getSiteConfig().getApplicationKey().
-                equals(optionToRemove.displayValue.getApplicationKey()));
+            this.items = this.items.filter(item => !item.getSiteConfig().getApplicationKey().equals(
+                optionToRemove.displayValue.getApplicationKey()));
             super.removeOption(optionToRemove, silent);
         }
 
